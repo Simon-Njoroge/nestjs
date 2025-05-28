@@ -10,11 +10,25 @@ import { BookingsModule } from './modules/bookings/bookings.module';
 import { TicketsModule } from './modules/tickets/tickets.module';
 import { InquiriesModule } from './modules/inquiries/inquiries.module';
 import { AdminLogsModule } from './modules/admin-logs/admin-logs.module';
-
-
+import {ConfigModule} from '@nestjs/config'
 
 @Module({
-  imports: [UsersModule, AdminModule, AuthModule, GuestUsersModule, TourPackagesModule, BookingsModule, TicketsModule, InquiriesModule, AdminLogsModule],
+  imports: [
+    ConfigModule.forRoot(
+      {
+        isGlobal: true,
+        envFilePath: '.env'
+      }
+    ),
+    UsersModule,
+     AdminModule, 
+     AuthModule, 
+     GuestUsersModule, 
+     TourPackagesModule, 
+     BookingsModule, 
+     TicketsModule,
+     InquiriesModule,
+     AdminLogsModule],
   controllers: [AppController],
   providers: [AppService],
 })

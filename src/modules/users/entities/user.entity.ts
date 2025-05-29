@@ -14,7 +14,7 @@ import { Ticket } from '../../tickets/entities/ticket.entity';
 import { Inquiry } from '../../inquiries/entities/inquiry.entity';
 import { Exclude } from 'class-transformer';
 import { Role } from '../../../common/constants';
-
+import { TourPackage } from '../../tour-packages/entities/tour-package.entity';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -24,7 +24,7 @@ export class User {
   email: string;
 
   @Column()
-  @Exclude() 
+  @Exclude()
   password: string;
 
   @Column({ name: 'first_name' })
@@ -61,7 +61,6 @@ export class User {
   @DeleteDateColumn({ name: 'deleted_at', nullable: true })
   deletedAt: Date;
 
- 
   @OneToMany(() => Booking, (booking) => booking.user, {
     cascade: true,
     onDelete: 'CASCADE',
@@ -80,7 +79,12 @@ export class User {
   })
   inquiries: Inquiry[];
 
- 
+  @OneToMany(() => TourPackage, (tourPackage) => tourPackage.user, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  tourPackages: TourPackage[];
+
   @BeforeInsert()
   @BeforeUpdate()
   async validate() {

@@ -8,7 +8,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
-import {ConfigService} from '@nestjs/config'
+import { ConfigService } from '@nestjs/config';
 // import { RolesGuard } from './common/guards/roles.guard';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -29,10 +29,10 @@ async function bootstrap() {
   // Global pipes
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, 
-      forbidNonWhitelisted: true, 
-      transform: true, 
-      disableErrorMessages: process.env.NODE_ENV === 'production', 
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      disableErrorMessages: process.env.NODE_ENV === 'production',
     }),
   );
 
@@ -59,8 +59,8 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api-docs', app, document);
   }
-  
-  const configService=app.get(ConfigService)
+
+  const configService = app.get(ConfigService);
   // Start the application
   const port = configService.getOrThrow<number>('PORT');
   await app.listen(port);

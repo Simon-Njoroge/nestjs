@@ -10,25 +10,26 @@ import { BookingsModule } from './modules/bookings/bookings.module';
 import { TicketsModule } from './modules/tickets/tickets.module';
 import { InquiriesModule } from './modules/inquiries/inquiries.module';
 import { AdminLogsModule } from './modules/admin-logs/admin-logs.module';
-import {ConfigModule} from '@nestjs/config'
+import { ConfigModule } from '@nestjs/config';
+import { SeedModule } from './modules/seed/seed.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(
-      {
-        isGlobal: true,
-        envFilePath: '.env'
-      }
-    ),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
     UsersModule,
-     AdminModule, 
-     AuthModule, 
-     GuestUsersModule, 
-     TourPackagesModule, 
-     BookingsModule, 
-     TicketsModule,
-     InquiriesModule,
-     AdminLogsModule],
+    AdminModule,
+    AuthModule,
+    GuestUsersModule,
+    TourPackagesModule,
+    BookingsModule,
+    TicketsModule,
+    InquiriesModule,
+    AdminLogsModule,
+    SeedModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

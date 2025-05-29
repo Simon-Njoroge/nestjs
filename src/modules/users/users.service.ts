@@ -6,13 +6,18 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 @Injectable()
 export class UsersService {
-constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
-  async create(createUserDto: CreateUserDto):Promise<User> {
-    return await this.userRepository.save(createUserDto).then((profile)=>{
-      return profile;
-    }).catch((error)=>{
-      throw new Error('Profile creation failed')
-    });
+  constructor(
+    @InjectRepository(User) private userRepository: Repository<User>,
+  ) {}
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    return await this.userRepository
+      .save(createUserDto)
+      .then((profile) => {
+        return profile;
+      })
+      .catch((error) => {
+        throw new Error('Profile creation failed');
+      });
   }
 
   async findAll() {

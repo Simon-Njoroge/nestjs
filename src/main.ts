@@ -15,12 +15,6 @@ import './polyfill';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // Enable CORS for production
-  app.enableCors({
-    origin: process.env.CORS_ORIGIN || '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  });
 
   // Cookie parser middleware
   app.use(cookieParser());
@@ -41,9 +35,7 @@ async function bootstrap() {
   // Global filters
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  // app.useGlobalGuards(new RolesGuard());
-  // Global interceptors
-  // app.useGlobalInterceptors(new TransformInterceptor());
+
 
   // Serve static files
   app.useStaticAssets(join(__dirname, '..', 'public'));

@@ -9,6 +9,8 @@ import * as cookieParser from 'cookie-parser';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import { ConfigService } from '@nestjs/config';
+import './polyfill';
+
 // import { RolesGuard } from './common/guards/roles.guard';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -24,7 +26,7 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // Logger middleware
-  app.use(LoggerMiddleware);
+  // app.use(LoggerMiddleware);
 
   // Global pipes
   app.useGlobalPipes(
@@ -41,7 +43,7 @@ async function bootstrap() {
 
   // app.useGlobalGuards(new RolesGuard());
   // Global interceptors
-  app.useGlobalInterceptors(new TransformInterceptor());
+  // app.useGlobalInterceptors(new TransformInterceptor());
 
   // Serve static files
   app.useStaticAssets(join(__dirname, '..', 'public'));

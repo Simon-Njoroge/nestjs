@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { Module, MiddlewareConsumer, NestModule, RequestMethod } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+
 import { UsersModule } from './modules/users/users.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -10,8 +10,9 @@ import { BookingsModule } from './modules/bookings/bookings.module';
 import { TicketsModule } from './modules/tickets/tickets.module';
 import { InquiriesModule } from './modules/inquiries/inquiries.module';
 import { AdminLogsModule } from './modules/admin-logs/admin-logs.module';
-import { ConfigModule } from '@nestjs/config';
 import { SeedModule } from './modules/seed/seed.module';
+import { LogsModule } from './modules/logs/logs.module';
+import { LoggerMiddleware } from './common/middleware/logger.middleware'; // adjust path as needed
 
 @Module({
   imports: [
@@ -29,8 +30,15 @@ import { SeedModule } from './modules/seed/seed.module';
     InquiriesModule,
     AdminLogsModule,
     SeedModule,
+    LogsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes('*'); // Apply to all routes, or customize to e.g. { path: 'seed', method: RequestMethod.POST }
+  }
+}

@@ -34,11 +34,9 @@ services:
       - postgres
       - redis
     ports:
-      - "3000:3000"
+      - "8000:8000"
     environment:
       - NODE_ENV=development
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
     env_file:
       - .env
     volumes:
@@ -46,7 +44,7 @@ services:
       - /usr/src/app/node_modules
     networks:
       - tourism_network
-    command: npm run dev
+    command: npm run start:dev
 
 volumes:
   postgres_data:

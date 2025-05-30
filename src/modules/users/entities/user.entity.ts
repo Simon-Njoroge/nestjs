@@ -15,9 +15,11 @@ import { Inquiry } from '../../inquiries/entities/inquiry.entity';
 import { Exclude } from 'class-transformer';
 import { Role } from '../../../common/constants';
 import { TourPackage } from '../../tour-packages/entities/tour-package.entity';
+ 
+
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Column({ unique: true })
@@ -92,4 +94,5 @@ export class User {
       this.email = this.email.toLowerCase().trim();
     }
   }
+
 }

@@ -1,9 +1,4 @@
-import {
-  IsString,
-  IsEmail,
-  IsOptional,
-  IsNotEmpty,
-} from 'class-validator';
+import { IsString, IsEmail, IsOptional, IsNotEmpty } from 'class-validator';
 
 export class CreateGuestUserDto {
   @IsString()

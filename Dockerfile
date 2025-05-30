@@ -1,5 +1,5 @@
 # Use Node.js v16 with Alpine (lightweight)
-FROM node:18-alpine
+FROM node:18-slim
 
 # Install pnpm globally
 RUN npm install -g pnpm

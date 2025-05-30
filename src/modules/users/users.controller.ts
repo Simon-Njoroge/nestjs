@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -21,8 +22,8 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@Query('page') page = 1, @Query('limit') limit = 1000) {
+    return this.usersService.findAll(Number(page), Number(limit));
   }
 
   @Get(':id')

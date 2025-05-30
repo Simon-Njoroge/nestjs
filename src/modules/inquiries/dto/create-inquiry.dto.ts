@@ -1,9 +1,4 @@
-import {
-  IsUUID,
-  IsString,
-  IsNotEmpty,
-  IsOptional,
-} from 'class-validator';
+import { IsUUID, IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateInquiryDto {
   @IsUUID()

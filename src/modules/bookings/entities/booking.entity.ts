@@ -8,13 +8,14 @@ import {
   DeleteDateColumn,
   BeforeInsert,
 } from 'typeorm';
+// const uuidv4 = require('uuid').v4; 
 import { User } from '../../users/entities/user.entity';
 import { GuestUser } from '../../guest-users/entities/guest-user.entity';
 import { TourPackage } from '../../tour-packages/entities/tour-package.entity';
 
 @Entity()
 export class Booking {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Column({ name: 'booking_reference', unique: true })
@@ -68,4 +69,8 @@ export class Booking {
     this.bookingReference =
       'BK-' + Math.random().toString(36).substring(2, 10).toUpperCase();
   }
+  // @BeforeInsert()
+  // generateId() {
+  //   this.id = uuidv4();
+  // }
 }

@@ -1,9 +1,4 @@
-import {
-  Controller,
-  Post,
-  HttpCode,
-  HttpStatus,
-} from '@nestjs/common';
+import { Controller, Post, HttpCode, HttpStatus } from '@nestjs/common';
 import { SeedService } from './seed.service';
 // import { CreateSeedDto } from './dto/create-seed.dto';
 // import { UpdateSeedDto } from './dto/update-seed.dto';

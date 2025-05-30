@@ -6,13 +6,15 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   OneToMany,
+  BeforeInsert,
 } from 'typeorm';
 import { Inquiry } from '../../inquiries/entities/inquiry.entity';
 import { Booking } from '../../bookings/entities/booking.entity';
+// const uuidv4 = require('uuid').v4; 
 
 @Entity()
 export class GuestUser {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Column({ name: 'full_name' })
@@ -44,4 +46,8 @@ export class GuestUser {
     onDelete: 'CASCADE',
   })
   bookings: Booking[];
+  // @BeforeInsert()
+  // generateId() {
+  //   this.id = uuidv4();
+  // }
 }

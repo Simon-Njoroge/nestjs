@@ -6,13 +6,16 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  BeforeInsert,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { TourPackage } from '../../tour-packages/entities/tour-package.entity';
 import { Booking } from 'src/modules/bookings/entities/booking.entity';
+// const uuidv4 = require('uuid').v4; 
+
 @Entity()
 export class Ticket {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Column()
@@ -49,4 +52,9 @@ export class Ticket {
   tourPackage: TourPackage;
 
   bookings: Booking[];
+
+  // @BeforeInsert()
+  // generateId() {
+  //   this.id = uuidv4();
+  // }
 }

@@ -1,5 +1,14 @@
-@url = http://localhost:3000
+@url = http://localhost:8000
 
 
+### Seed the database with initial data
 ###
-GET {{url}}/
+POST {{url}}/seed
+
+### Get all users
+### 
+GET {{url}}/users
+
+### Get a user by ID
+###
+GET {{url}}/users/200000

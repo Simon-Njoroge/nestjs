@@ -6,13 +6,15 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  BeforeInsert,
 } from 'typeorm';
+// const uuidv4 = require('uuid').v4; 
 import { User } from '../../users/entities/user.entity';
 import { TourPackage } from '../../tour-packages/entities/tour-package.entity';
 import { GuestUser } from '../../guest-users/entities/guest-user.entity';
 @Entity()
 export class Inquiry {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Column()
@@ -50,4 +52,9 @@ export class Inquiry {
     onDelete: 'SET NULL',
   })
   guestUser: GuestUser;
+
+  // @BeforeInsert()
+  // generateId() {
+  //   this.id = uuidv4();
+  // }
 }

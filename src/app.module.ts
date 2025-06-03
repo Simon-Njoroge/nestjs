@@ -1,6 +1,6 @@
 import { Module, MiddlewareConsumer, NestModule, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-
+import { ConfigService } from '@nestjs/config';
 import { UsersModule } from './modules/users/users.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -12,8 +12,7 @@ import { InquiriesModule } from './modules/inquiries/inquiries.module';
 import { AdminLogsModule } from './modules/admin-logs/admin-logs.module';
 import { SeedModule } from './modules/seed/seed.module';
 import { LogsModule } from './modules/logs/logs.module';
-import { LoggerMiddleware } from './common/middleware/logger.middleware'; // adjust path as needed
-
+import { LoggerMiddleware } from './common/middleware/logger.middleware';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -31,6 +30,20 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware'; // adj
     AdminLogsModule,
     SeedModule,
     LogsModule,
+  //   CacheModule.registerAsync({
+  //     imports: [ConfigModule],
+  //     inject: [ConfigService],
+  //     useFactory: (configService: ConfigService) => ({
+  //      return {
+  //       stores: [
+  //         new Keyv({
+  //           store: new CachableMemory({ttl:30000,lruSize:1000}),
+  //         )}
+
+  //       ]
+  //      }
+  //     }),
+  //           }),    
   ],
   controllers: [],
   providers: [],

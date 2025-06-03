@@ -51,14 +51,16 @@ async function bootstrap() {
       .addBearerAuth()
       .build();
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api-docs', app, document);
+    SwaggerModule.setup('api-docs', app, document,{
+      jsonDocumentUrl: '/api-docs-json',
+    });
   }
 
   const configService = app.get(ConfigService);
   // Start the application
   const port = configService.getOrThrow<number>('PORT');
-  await app.listen(port);
-  console.log(`Application is running on: http://localhost:${port}`);
+  // await app.listen(port);
+  // console.log(`Application is running on: http://localhost:${port}`);
 }
 
 bootstrap();

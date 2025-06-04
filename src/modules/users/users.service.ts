@@ -4,20 +4,36 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { Logger } from 'src/common/utils/logger';
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
   async create(createUserDto: CreateUserDto): Promise<User> {
-    return await this.userRepository
-      .save(createUserDto)
-      .then((profile) => {
-        return profile;
-      })
-      .catch((error) => {
-        throw new Error('Profile creation failed');
-      });
+    const existingUser = await this.userRepository.findOne({
+      where: { email: createUserDto.email },
+    });
+
+    if (existingUser) {
+      throw new Error(`User with email ${createUserDto.email} already exists`);
+    }
+
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    const newUser = this.userRepository.create({
+      ...createUserDto,
+      password: hashedPassword,
+    });
+
+    try {
+      const savedUser = await this.userRepository.save(newUser);
+      Logger.info(`User with ID ${savedUser.id} created successfully`);
+      return savedUser;
+    } catch (error) {
+      Logger.error(`Error creating user: ${error.message}`);
+      throw new Error(`Error creating user: ${error.message}`);
+    }
   }
 
 async findAll(page = 1, limit = 1000): Promise<{ success: boolean; data: User[]; pagination: { total: number; page: number; limit: number; totalPages: number }; timestamp: string }> {
@@ -69,6 +85,7 @@ async findOne(id: number): Promise<{ success: boolean; data: User; timestamp: st
       data: user,
       timestamp: new Date().toISOString()
     };
+    Logger.info(`User with ID ${id} fetched successfully`);
   } catch (error) {
     throw new Error(`Error fetching user with ID ${id}: ${error.message}`);
   }
@@ -78,7 +95,16 @@ async findOne(id: number): Promise<{ success: boolean; data: User; timestamp: st
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    return this.userRepository.delete(id).then((result) => {
+      if (result.affected === 0) {
+        throw new Error(`User with ID ${id} not found`);
+      }
+      Logger.info(`User with ID ${id} deleted successfully`);
+      return { success: true, message: `User with ID ${id} deleted successfully` };
+    }).catch((error) => {
+      Logger.error(`Error deleting user with ID ${id}: ${error.message}`);
+      throw new Error(`Error deleting user with ID ${id}: ${error.message}`);
+    });
   }
 }

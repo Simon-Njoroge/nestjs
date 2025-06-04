@@ -10,7 +10,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import { ConfigService } from '@nestjs/config';
 import './polyfill';
-
+import { Logger } from './common/utils/logger';
 // import { RolesGuard } from './common/guards/roles.guard';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -59,8 +59,9 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   // Start the application
   const port = configService.getOrThrow<number>('PORT');
-  // await app.listen(port);
-  // console.log(`Application is running on: http://localhost:${port}`);
+  await app.listen(port);
+  console.log(`Application is running on: http://localhost:${port}`);
+  Logger.info(`Application is running on: http://localhost:${port}`);
 }
 
 bootstrap();

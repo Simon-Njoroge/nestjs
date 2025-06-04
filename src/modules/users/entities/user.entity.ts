@@ -48,6 +48,10 @@ export class User {
   @Column({ name: 'profile_picture', nullable: true })
   profilePicture: string;
 
+  @Column({ name: 'refresh_token', nullable: true })
+  @Exclude()
+  refreshToken: string;
+
   @Column({ name: 'last_login', nullable: true })
   lastLogin: Date;
 

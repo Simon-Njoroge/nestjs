@@ -9,6 +9,51 @@ POST {{url}}/seed
 ### 
 GET {{url}}/users
 
+### users
+### create a new user
+###
+POST {{url}}/users
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "securePass123",
+  "firstName": "John",
+  "lastName": "Doe",
+  "role": "user",
+  "phoneNumber": "+1234567890",
+  "profilePicture": "https://example.com/images/profile.jpg"
+}
+
 ### Get a user by ID
 ###
-GET {{url}}/users/200000
+GET {{url}}/users/2
+
+### Update a user by ID
+###
+PUT {{url}}/users/1
+Content-Type:  application/json
+
+{
+  "email": "user@example.com",
+  "password": "securePass123",
+  "firstName": "John",
+  "lastName": "Doe",
+  "role": "USER",
+  "phoneNumber": "+1234567890",
+  "profilePicture": "https://example.com/images/profile.jpg"
+}
+
+
+### Delete a user by ID
+###
+DELETE {{url}}/users/1
+
+### login
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "securePass123"
+}

@@ -1,6 +1,13 @@
-import { Module, MiddlewareConsumer, NestModule, RequestMethod } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { ConfigService } from '@nestjs/config';
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CacheModule } from '@nestjs/cache-manager';
+import { APP_GUARD } from '@nestjs/core';
+import { AtGuard } from './common/guards/at.guard';
+import Keyv from 'keyv';
+
+import { LoggerMiddleware } from './common/middleware/logger.middleware';
+
+// Your modules...
 import { UsersModule } from './modules/users/users.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -12,12 +19,25 @@ import { InquiriesModule } from './modules/inquiries/inquiries.module';
 import { AdminLogsModule } from './modules/admin-logs/admin-logs.module';
 import { SeedModule } from './modules/seed/seed.module';
 import { LogsModule } from './modules/logs/logs.module';
-import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import {  CacheInterceptor } from '@nestjs/cache-manager';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import * as redisStore from 'cache-manager-ioredis';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+    }),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        store: redisStore,
+        host: configService.get('REDIS_HOST'),
+        port: configService.get<number>('REDIS_PORT'),
+        ttl: 30, 
+      }),
     }),
     UsersModule,
     AdminModule,
@@ -30,28 +50,20 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
     AdminLogsModule,
     SeedModule,
     LogsModule,
-  //   CacheModule.registerAsync({
-  //     imports: [ConfigModule],
-  //     inject: [ConfigService],
-  //     useFactory: (configService: ConfigService) => ({
-  //      return {
-  //       stores: [
-  //         new Keyv({
-  //           store: new CachableMemory({ttl:30000,lruSize:1000}),
-  //         )}
-
-  //       ]
-  //      }
-  //     }),
-  //           }),    
   ],
-  controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AtGuard,
+    },
+      {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor, 
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMiddleware)
-      .forRoutes('*'); // Apply to all routes, or customize to e.g. { path: 'seed', method: RequestMethod.POST }
+    consumer.apply(LoggerMiddleware).forRoutes('*');
   }
 }

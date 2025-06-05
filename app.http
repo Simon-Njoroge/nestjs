@@ -1,5 +1,8 @@
 @url = http://localhost:8000
 
+@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwMDEsImVtYWlsIjoidXNlckBleGFtcGxlLmNvbSIsImlhdCI6MTc0OTExMDUwMCwiZXhwIjoxNzQ5MTExNDAwfQ.FqGq9zI3ZI4TO50M09PM4GEdPX0EobSpowjPDr-_J9o
+@refresh_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwMDEsImVtYWlsIjoidXNlckBleGFtcGxlLmNvbSIsImlhdCI6MTc0OTExMDUwMCwiZXhwIjoxNzQ5NzE1MzAwfQ.e7vMfJxpR8uzhiyyQbf9A4VdeJqnOvHMf0uKMsKBqdM
+
 
 ### Seed the database with initial data
 ###
@@ -8,6 +11,7 @@ POST {{url}}/seed
 ### Get all users
 ### 
 GET {{url}}/users
+Authorization:  Bearer {{access_token}}
 
 ### users
 ### create a new user
@@ -27,7 +31,8 @@ Content-Type: application/json
 
 ### Get a user by ID
 ###
-GET {{url}}/users/2
+GET {{url}}/users/1
+Authorization:  Bearer {{access_token}}
 
 ### Update a user by ID
 ###
@@ -47,9 +52,12 @@ Content-Type:  application/json
 
 ### Delete a user by ID
 ###
-DELETE {{url}}/users/1
+DELETE {{url}}/users/1001
 
 ### login
+
+### User LOGIN
+###
 POST {{url}}/auth/login
 Content-Type: application/json
 
@@ -57,3 +65,161 @@ Content-Type: application/json
   "email": "user@example.com",
   "password": "securePass123"
 }
+
+### logout
+###
+POST {{url}}/auth/logout/1
+Authorization:  Bearer {{access_token}}
+
+### tour-package
+### Create a new tour package
+###
+POST {{url}}/tour-packages
+Authorization:  Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "title": "Amazing Tour",
+  "description": "Explore the wonders of the world with our amazing tour package.",
+  "price": 299.99,
+  "startDate": "2023-10-01",
+  "endDate": "2023-10-06",
+  "location": "Paris, France",
+  "coverImage": "https://example.com/images/tour.jpg",
+  "itinerary": "Day 1: Arrival in Paris, Day 2: Eiffel Tower, Day 3: Louvre Museum, Day 4: Seine River Cruise, Day 5: Montmartre, Day 6: Departure",
+}
+
+### Get all tour packages
+###
+GET {{url}}/tour-packages
+Authorization:  Bearer {{access_token}}
+
+### Get a tour package by ID
+###
+GET {{url}}/tour-packages/1
+Authorization:  Bearer {{access_token}}
+### Update a tour package by ID
+###
+PUT {{url}}/tour-packages/1
+Content-Type: application/json
+
+{
+  "title": "Amazing Tour Updated",
+  "description": "Explore the wonders of the world with our amazing tour package, now updated.",
+  "price": 249.99,
+  "duration": "6 days",
+  "imageUrl": "https://example.com/images/tour-updated.jpg",
+  "availableSeats": 15
+}
+### Delete a tour package by ID
+###
+DELETE {{url}}/tour-packages/1
+Authorization:  Bearer {{access_token}}
+### Booking
+### Create a new booking
+###
+POST {{url}}/bookings
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "tourPackageId": 1,
+  "bookingDate": "2023-10-01",
+  "numberOfSeats": 2
+}
+
+### Get all bookings
+###
+GET {{url}}/bookings
+Authorization:  Bearer {{access_token}}
+### Get a booking by ID
+###
+GET {{url}}/bookings/1
+Authorization:  Bearer {{access_token}}
+### Update a booking by ID
+###
+PUT {{url}}/bookings/1
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "tourPackageId": 1,
+  "bookingDate": "2023-10-02",
+  "numberOfSeats": 3
+}
+
+### Delete a booking by ID
+###
+DELETE {{url}}/bookings/1
+
+### tickets
+### Create a new ticket
+###
+POST {{url}}/tickets
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "tourPackageId": 1,
+  "bookingId": 1,
+  "ticketDate": "2023-10-01",
+  "seatNumber": "A1"
+}
+### Get all tickets
+###
+GET {{url}}/tickets
+Authorization:  Bearer {{access_token}}
+
+### Get a ticket by ID
+###
+GET {{url}}/tickets/1
+Authorization:  Bearer {{access_token}}
+### Update a ticket by ID
+###
+PUT {{url}}/tickets/1
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "tourPackageId": 1,
+  "bookingId": 1,
+  "ticketDate": "2023-10-02",
+  "seatNumber": "A2"
+}
+
+### Delete a ticket by ID
+###
+DELETE {{url}}/tickets/1
+
+### inquiries
+### Create a new inquiry
+###
+POST {{url}}/inquiries
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "subject": "Inquiry about tour packages",
+  "message": "I would like to know more about the available tour packages."
+}
+
+### Get all inquiries
+###
+GET {{url}}/inquiries
+Authorization:  Bearer {{access_token}}
+### Get an inquiry by ID
+###
+GET {{url}}/inquiries/1
+Authorization:  Bearer {{access_token}}
+### Update an inquiry by ID
+###
+PUT {{url}}/inquiries/1
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "subject": "Updated Inquiry about tour packages",
+  "message": "I would like"
+}
+
+

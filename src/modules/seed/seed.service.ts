@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable,Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { User } from '../users/entities/user.entity';
@@ -20,8 +20,8 @@ export class SeedService {
     private readonly tourPackageRepository: Repository<TourPackage>,
     @InjectRepository(Booking)
     private readonly bookingRepository: Repository<Booking>,
-    // @InjectRepository(Ticket)
-    // private readonly ticketRepository: Repository<Ticket>,
+    @InjectRepository(Ticket)
+    private readonly ticketRepository: Repository<Ticket>,
     @InjectRepository(Inquiry)
     private readonly inquiryRepository: Repository<Inquiry>,
     private readonly dataSource: DataSource,
@@ -36,74 +36,76 @@ export class SeedService {
       // Clear existing data
       await this.dataSource.transaction(async (manager) => {
         await manager.query(`
-  TRUNCATE TABLE "booking", "inquiry", "tour_package", "user" RESTART IDENTITY CASCADE;
-`);
+        TRUNCATE TABLE 
+        "ticket", "booking", "inquiry", "tour_package", "user" 
+        RESTART IDENTITY CASCADE;
+      `);
       });
+
       this.logger.log('Existing data cleared');
 
       // Seed users
-      this.logger.log('Seeding 200,000 users...');
-      const BATCH_SIZE = 1000;
-      const TOTAL_USERS = 200000;
+      const TOTAL_USERS = 1000;
+      const users: User[] = [];
 
-      for (let i = 0; i < TOTAL_USERS; i += BATCH_SIZE) {
-        const batch: User[] = [];
-
-        for (let j = 0; j < BATCH_SIZE && i + j < TOTAL_USERS; j++) {
-          const index = i + j;
-
-          const user = new User();
-          user.email = `user${index}@example.com`;
-          user.password = faker.internet.password();
-          user.firstName = faker.person.firstName();
-          user.lastName = faker.person.lastName();
-          user.role = faker.helpers.arrayElement([
-            'admin',
-            'user',
-            'guest',
-          ]) as Role;
-          user.phoneNumber = `07123${String(10000 + index).slice(-5)}`;
-          user.profilePicture = faker.image.avatar();
-
-          batch.push(user);
-        }
-
-        await this.userRepository.save(batch);
-        this.logger.log(`Saved ${i + batch.length} users...`);
+      for (let i = 0; i < TOTAL_USERS; i++) {
+        const user = this.userRepository.create({
+          email: `user${i}@example.com`,
+          password: faker.internet.password(),
+          firstName: faker.person.firstName(),
+          lastName: faker.person.lastName(),
+          role: faker.helpers.arrayElement(['admin', 'user', 'guest']) as Role,
+          phoneNumber: faker.phone.number('07########'),
+          profilePicture: faker.image.avatar(),
+        });
+        users.push(user);
       }
 
-      this.logger.log('✅ 100,000 users seeded successfully.');
+      await this.userRepository.save(users);
+      this.logger.log(`${TOTAL_USERS} users seeded`);
 
-      // //seed tour packages
-      // this.logger.log('Seeding tour packages...');
-      // const BATCH_SIZE_TOUR = 1000;
-      // const TOTAL_TOUR_PACKAGES = 100000;
-      // for (let i = 0; i < TOTAL_TOUR_PACKAGES; i += BATCH_SIZE_TOUR) {
-      //   const batchtourpackage: TourPackage[] = [];
-      //   for (
-      //     let j = 0;
-      //     j < BATCH_SIZE_TOUR && i + j < TOTAL_TOUR_PACKAGES;
-      //     j++
-      //   ) {
-      //     const tour = new TourPackage();
-      //     tour.title = faker.commerce.productName();
-      //     tour.description = faker.lorem.paragraph();
-      //     tour.price = parseFloat(faker.commerce.price());
-      //     tour.startDate = faker.date.future();
-      //     tour.endDate = faker.date.future();
-      //     batchtourpackage;
-      //   }
-      //   await this.tourPackageRepository.save(batchtourpackage);
-      //   this.logger.log(
-      //     `Saved ${i + batchtourpackage.length} tour packages...`,
-      //   );
-      // }
+      // Seed tour packages
+      const TOTAL_PACKAGES = 100;
+      const tourPackages: TourPackage[] = [];
 
-      //seed
-      return {
-        message:
-          'Database seeded successfully with 50,000 users and tourpackage.',
-      };
+      for (let i = 0; i < TOTAL_PACKAGES; i++) {
+        const pkg = this.tourPackageRepository.create({
+          title: faker.lorem.words(3),
+          description: faker.lorem.paragraph(),
+          price: faker.number.float({ min: 100, max: 5000 }),
+          startDate: faker.date.future(),
+          endDate: faker.date.future({ years: 1 }),
+        });
+        tourPackages.push(pkg);
+      }
+
+      await this.tourPackageRepository.save(tourPackages);
+      this.logger.log(`${TOTAL_PACKAGES} tour packages seeded`);
+
+
+
+      // Seed inquiries
+      const inquiries: Inquiry[] = [];
+
+      for (let i = 0; i < 300; i++) {
+        const user = faker.helpers.arrayElement(users);
+        const tour = faker.helpers.arrayElement(tourPackages);
+
+        const inquiry = this.inquiryRepository.create({
+          subject: faker.lorem.sentence(),
+          message: faker.lorem.paragraph(),
+          isResolved: faker.datatype.boolean(),
+          user,
+          tourPackage: tour,
+        });
+
+        inquiries.push(inquiry);
+      }
+
+      await this.inquiryRepository.save(inquiries);
+      this.logger.log(`300 inquiries seeded`);
+
+      return { message: 'Database seeded successfully with related data.' };
     } catch (error) {
       this.logger.error('❌ Error during seeding:', error);
       throw new Error('Seeding failed');

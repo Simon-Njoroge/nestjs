@@ -1,42 +1,33 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { BookingsService } from './bookings.service';
-import { CreateBookingDto } from './dto/create-booking.dto';
-import { UpdateBookingDto } from './dto/update-booking.dto';
+import { Booking } from './entities/booking.entity';
 
 @Controller('bookings')
 export class BookingsController {
   constructor(private readonly bookingsService: BookingsService) {}
 
-  @Post()
-  create(@Body() createBookingDto: CreateBookingDto) {
-    return this.bookingsService.create(createBookingDto);
-  }
-
   @Get()
-  findAll() {
+  findAll(): Promise<Booking[]> {
     return this.bookingsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.bookingsService.findOne(+id);
+  findOne(@Param('id') id: string): Promise<Booking> {
+    return this.bookingsService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBookingDto: UpdateBookingDto) {
-    return this.bookingsService.update(+id, updateBookingDto);
+  @Post()
+  create(@Body() data: Partial<Booking>): Promise<Booking> {
+    return this.bookingsService.create(data);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() data: Partial<Booking>): Promise<Booking> {
+    return this.bookingsService.update(id, data);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.bookingsService.remove(+id);
+  remove(@Param('id') id: string): Promise<void> {
+    return this.bookingsService.remove(id);
   }
 }

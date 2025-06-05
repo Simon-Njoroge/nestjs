@@ -8,10 +8,6 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 export class CreateBookingDto {
-  @ApiProperty()
-  @IsUUID()
-  @IsNotEmpty()
-  userId: string;
 
   @ApiProperty()
   @IsUUID()
@@ -39,4 +35,8 @@ export class CreateBookingDto {
   @IsUUID()
   @IsOptional()
   guestUserId?: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  userId: string;
 }

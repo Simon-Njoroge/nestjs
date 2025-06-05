@@ -8,6 +8,7 @@ import {
   DeleteDateColumn,
   OneToMany,
   BeforeInsert,
+  JoinColumn
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Ticket } from '../../tickets/entities/ticket.entity';
@@ -53,6 +54,7 @@ export class TourPackage {
     onDelete: 'SET NULL',
     nullable: true,
   })
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   @OneToMany(() => Ticket, (ticket) => ticket.tourPackage, {

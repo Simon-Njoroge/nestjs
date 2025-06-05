@@ -10,7 +10,7 @@ import { Inquiry } from '../inquiries/entities/inquiry.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, TourPackage, Booking, Inquiry]),
+    TypeOrmModule.forFeature([User, TourPackage, Booking, Inquiry, Ticket]),
   ],
   controllers: [SeedController],
   providers: [SeedService],

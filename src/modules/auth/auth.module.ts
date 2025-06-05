@@ -5,25 +5,28 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { User } from '../users/entities/user.entity';
+import { Auth } from './entities/auth.entity';
 import { DatabaseModule } from 'src/config/database.module';
-
+import { AtStrategy } from 'src/common/strategies/at.strategy';
 @Module({
   imports: [
     DatabaseModule,
     TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({
-      imports: [ConfigModule], 
+      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         secret: config.get<string>('JWT_ACCESS_SECRET'),
         signOptions: {
-          expiresIn: '15m',
+          expiresIn: config.get<string>('JWT_ACCESS_EXPIRES') || '15m',
         },
       }),
     }),
+
+    ConfigModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService,AtStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

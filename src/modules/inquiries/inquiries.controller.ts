@@ -1,42 +1,33 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { InquiriesService } from './inquiries.service';
-import { CreateInquiryDto } from './dto/create-inquiry.dto';
-import { UpdateInquiryDto } from './dto/update-inquiry.dto';
+import { Inquiry } from './entities/inquiry.entity';
 
 @Controller('inquiries')
 export class InquiriesController {
   constructor(private readonly inquiriesService: InquiriesService) {}
 
-  @Post()
-  create(@Body() createInquiryDto: CreateInquiryDto) {
-    return this.inquiriesService.create(createInquiryDto);
-  }
-
   @Get()
-  findAll() {
+  findAll(): Promise<Inquiry[]> {
     return this.inquiriesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.inquiriesService.findOne(+id);
+  findOne(@Param('id') id: string): Promise<Inquiry> {
+    return this.inquiriesService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateInquiryDto: UpdateInquiryDto) {
-    return this.inquiriesService.update(+id, updateInquiryDto);
+  @Post()
+  create(@Body() data: Partial<Inquiry>): Promise<Inquiry> {
+    return this.inquiriesService.create(data);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() data: Partial<Inquiry>): Promise<Inquiry> {
+    return this.inquiriesService.update(id, data);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.inquiriesService.remove(+id);
+  remove(@Param('id') id: string): Promise<void> {
+    return this.inquiriesService.remove(id);
   }
 }

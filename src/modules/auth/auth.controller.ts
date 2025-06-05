@@ -1,53 +1,48 @@
-import {
-  Controller,
-  Post,
-  Body,
-  HttpCode,
-  HttpStatus,
-} from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, Req, Param } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { LoginDto } from './auth.service';
-
-@ApiTags('Authentication')
+import { Public } from 'src/common/decorators/public.decorator';
+interface LoginDto {
+  email: string;
+  password: string;
+}
+import { ApiProperty } from '@nestjs/swagger';
+import { Logger } from 'src/common/utils/logger';
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   // @Post('signup')
-  // @ApiOperation({ summary: 'Register / sign up a new user' })
-  // @ApiResponse({ status: 201, description: 'User registered, tokens returned' })
-  // @ApiResponse({ status: 401, description: 'Email already in use' })
-  // async signup(@Body() dto: CreateAuthDto) {
-  //   return this.authService.signup(dto);
+  // @ApiOperation({ summary: 'Register a new user' })
+  // @ApiResponse({ status: 201, description: 'User registered successfully' })
+  // async signup(@Body() createAuthDto: CreateAuthDto) {
+  //   return this.authService.signup(createAuthDto);
   // }
 
+  @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Log in with email + password' })
+  @ApiOperation({ summary: 'Login with email and password' })
   @ApiResponse({ status: 200, description: 'Tokens returned on successful login' })
-  @ApiResponse({ status: 401, description: 'Invalid credentials' })
-  async login(@Body() dto: LoginDto) {
-    return this.authService.login(dto);
+  async login(@Body() loginDto: LoginDto) {
+    return this.authService.login(loginDto.email, loginDto.password);
   }
 
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Provide userId + refreshToken to get new tokens' })
-  @ApiResponse({ status: 200, description: 'New tokens returned' })
-  @ApiResponse({ status: 401, description: 'Refresh token invalid or expired' })
-  async refresh(
-    @Body() body: { userId: string; refreshToken: string },
-  ) {
+  @ApiOperation({ summary: 'Get new tokens with refresh token' })
+  async refresh(@Body() body: { userId: number; refreshToken: string }) {
     return this.authService.refreshTokens(body.userId, body.refreshToken);
   }
 
-  @Post('logout')
+  @Post('logout/:id')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Log out (invalidate all refresh sessions)' })
-  @ApiResponse({ status: 200, description: 'All sessions for user removed' })
-  async logout(@Body() body: { userId: string }) {
-    return this.authService.logout(body.userId);
+  @ApiOperation({ summary: 'Logout and invalidate refresh token' })
+  async logout(@Param('id') id:number) {
+    Logger.info('logged out successfully')
+    return this.authService.logout(id);
+
   }
 }

@@ -1,20 +1,20 @@
 
 
 services:
-  postgres:
-    image: postgres:13-alpine
-    container_name: tourism_postgres
-    environment:
-     POSTGRES_USER: postgres
-     POSTGRES_PASSWORD: postgres
-     POSTGRES_DB: tourism_db
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - tourism_network
-    restart: unless-stopped
+  # postgres:
+  #   image: postgres:13-alpine
+  #   container_name: tourism_postgres
+  #   environment:
+  #    POSTGRES_USER: postgres
+  #    POSTGRES_PASSWORD: postgres
+  #    POSTGRES_DB: tourism_db
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   networks:
+  #     - tourism_network
+  #   restart: unless-stopped
 
   redis:
     image: redis:6-alpine
@@ -27,27 +27,26 @@ services:
       - tourism_network
     restart: unless-stopped
 
-  app:
-    build: .
-    container_name: tourism_app
-    depends_on:
-      - postgres
-      - redis
-    ports:
-      - "8000:8000"
-    environment:
-      - NODE_ENV=development
-    env_file:
-      - .env
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-    networks:
-      - tourism_network
-    command: npm run start:dev
+  # app:
+  #   build: .
+  #   container_name: tourism_app
+  #   depends_on:
+  #     - postgres
+  #     - redis
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     - NODE_ENV=development
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - /usr/src/app/node_modules
+  #   networks:
+  #     - tourism_network
+  #   command: npm run start:dev
 
 volumes:
-  postgres_data:
   redis_data:
 
 networks:

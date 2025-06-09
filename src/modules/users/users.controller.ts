@@ -31,12 +31,14 @@ export class UsersController {
   findAll(@Query('page') page = 1, @Query('limit') limit = 1000) {
     return this.usersService.findAll(Number(page), Number(limit));
   }
-
+ @UseGuards(AtGuard, RolesGuard)
+ @Roles(Role.USER)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
-
+  
+  @Public()
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);

@@ -1,7 +1,7 @@
 @url = http://localhost:8000
 
-@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwMDEsImVtYWlsIjoidXNlckBleGFtcGxlLmNvbSIsImlhdCI6MTc0OTExMDUwMCwiZXhwIjoxNzQ5MTExNDAwfQ.FqGq9zI3ZI4TO50M09PM4GEdPX0EobSpowjPDr-_J9o
-@refresh_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwMDEsImVtYWlsIjoidXNlckBleGFtcGxlLmNvbSIsImlhdCI6MTc0OTExMDUwMCwiZXhwIjoxNzQ5NzE1MzAwfQ.e7vMfJxpR8uzhiyyQbf9A4VdeJqnOvHMf0uKMsKBqdM
+@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwMDIsImVtYWlsIjoidXNlcjEwMDFAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDk0NTkxMjQsImV4cCI6MTc0OTQ2MDAyNH0.Hz5kkm0PRJSfHTR2wABk_LIwkI69N9gyFZg-sy-hqpQ
+@refresh_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwMDIsImVtYWlsIjoidXNlcjEwMDFAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDk0NTkxMjQsImV4cCI6MTc1MDA2MzkyNH0.G82dgORK7HQGI4sL8zt7_5DTRuS_vX7YXBT8-8RZvv8
 
 
 ### Seed the database with initial data
@@ -20,7 +20,7 @@ POST {{url}}/users
 Content-Type: application/json
 
 {
-  "email": "user@example.com",
+  "email": "user1001@example.com",
   "password": "securePass123",
   "firstName": "John",
   "lastName": "Doe",
@@ -44,7 +44,7 @@ Content-Type:  application/json
   "password": "securePass123",
   "firstName": "John",
   "lastName": "Doe",
-  "role": "USER",
+  "role": "user",
   "phoneNumber": "+1234567890",
   "profilePicture": "https://example.com/images/profile.jpg"
 }
@@ -62,7 +62,7 @@ POST {{url}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "user@example.com",
+  "email": "user1001@example.com",
   "password": "securePass123"
 }
 

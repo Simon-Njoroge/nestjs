@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { APP_GUARD } from '@nestjs/core';
 import { AtGuard } from './common/guards/at.guard';
+import { RolesGuard } from './common/guards/roles.guard';
 import Keyv from 'keyv';
 
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
@@ -21,6 +22,7 @@ import { SeedModule } from './modules/seed/seed.module';
 import { LogsModule } from './modules/logs/logs.module';
 import {  CacheInterceptor } from '@nestjs/cache-manager';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { CaslModule } from './modules/casl/casl.module';
 import * as redisStore from 'cache-manager-ioredis';
 @Module({
   imports: [
@@ -50,6 +52,7 @@ import * as redisStore from 'cache-manager-ioredis';
     AdminLogsModule,
     SeedModule,
     LogsModule,
+    CaslModule,
   ],
   providers: [
     {
@@ -60,6 +63,10 @@ import * as redisStore from 'cache-manager-ioredis';
       provide: APP_INTERCEPTOR,
       useClass: CacheInterceptor, 
     },
+     {
+    provide: APP_GUARD,
+    useClass: RolesGuard,
+  },
   ],
 })
 export class AppModule implements NestModule {

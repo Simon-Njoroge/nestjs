@@ -1,60 +1,26 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
-  BeforeInsert,
-} from 'typeorm';
-import { User } from '../../users/entities/user.entity';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, Column,JoinColumn } from 'typeorm';  
 import { TourPackage } from '../../tour-packages/entities/tour-package.entity';
-import { Booking } from 'src/modules/bookings/entities/booking.entity';
-// const uuidv4 = require('uuid').v4; 
+import { Booking } from '../../bookings/entities/booking.entity';
 
 @Entity()
 export class Ticket {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
-  @Column()
-  ticketNumber: string;
-
-  @Column('decimal', { precision: 10, scale: 2 })
-  price: number;
-
-  @Column()
-  seatNumber: string;
-
-  @Column({ default: false })
-  isUsed: boolean;
-
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
-
-  @DeleteDateColumn({ name: 'deleted_at', nullable: true })
-  deletedAt: Date;
-
-  @ManyToOne(() => User, (user) => user.tickets, {
-    onDelete: 'SET NULL',
-    nullable: true,
-  })
-  user: User;
-
-  @ManyToOne(() => TourPackage, (tourPackage) => tourPackage.tickets, {
-    onDelete: 'SET NULL',
-    nullable: true,
-  })
+  @ManyToOne(() => TourPackage, tour => tour.tickets)
+  @JoinColumn({ name: 'tourPackageId' })
   tourPackage: TourPackage;
 
-  bookings: Booking[];
+  @ManyToOne(() => Booking, booking => booking.tickets)
+  @JoinColumn({ name: 'bookingId' })
+  booking: Booking;
 
-  // @BeforeInsert()
-  // generateId() {
-  //   this.id = uuidv4();
-  // }
+  @Column()
+  travelerName: string;
+
+  @Column()
+  travelerEmail: string;
+
+  @Column()
+  travelerPhone: string;
 }

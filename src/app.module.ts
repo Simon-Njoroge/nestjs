@@ -18,14 +18,27 @@ import { BookingsModule } from './modules/bookings/bookings.module';
 import { TicketsModule } from './modules/tickets/tickets.module';
 import { InquiriesModule } from './modules/inquiries/inquiries.module';
 import { AdminLogsModule } from './modules/admin-logs/admin-logs.module';
-import { SeedModule } from './modules/seed/seed.module';
 import { LogsModule } from './modules/logs/logs.module';
-import {  CacheInterceptor } from '@nestjs/cache-manager';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CaslModule } from './modules/casl/casl.module';
+import { ReviewModule } from './modules/review/review.module';
+import { PaymentModule } from './modules/payment/payment.module';
 import * as redisStore from 'cache-manager-ioredis';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { CustomThrottlerGuard } from './common/guards/throttler.guard';
+
+
 @Module({
   imports: [
+   ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60000,
+          limit: 10,
+        },
+      ],
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
@@ -38,7 +51,7 @@ import * as redisStore from 'cache-manager-ioredis';
         store: redisStore,
         host: configService.get('REDIS_HOST'),
         port: configService.get<number>('REDIS_PORT'),
-        ttl: 30, 
+        ttl: 30,
       }),
     }),
     UsersModule,
@@ -50,23 +63,25 @@ import * as redisStore from 'cache-manager-ioredis';
     TicketsModule,
     InquiriesModule,
     AdminLogsModule,
-    SeedModule,
     LogsModule,
     CaslModule,
+    ReviewModule,
+    PaymentModule,
   ],
   providers: [
     {
       provide: APP_GUARD,
       useClass: AtGuard,
     },
-      {
+    {
       provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor, 
+      useClass: CacheInterceptor,
     },
-     {
-    provide: APP_GUARD,
-    useClass: RolesGuard,
-  },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+    { provide: APP_GUARD, useClass: CustomThrottlerGuard },
   ],
 })
 export class AppModule implements NestModule {

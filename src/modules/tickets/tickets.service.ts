@@ -1,64 +1,106 @@
-import { Injectable, Logger, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Ticket } from './entities/ticket.entity';
+import { TourPackage } from '../tour-packages/entities/tour-package.entity';
+import { Booking } from '../bookings/entities/booking.entity';
+import { CreateTicketDto } from './dto/create-ticket.dto';
+import { UpdateTicketDto } from './dto/update-ticket.dto';
 
 @Injectable()
 export class TicketsService {
-  private readonly logger = new Logger(TicketsService.name);
-
   constructor(
     @InjectRepository(Ticket)
-    private ticketRepo: Repository<Ticket>,
+    private readonly ticketRepo: Repository<Ticket>,
+
+    @InjectRepository(TourPackage)
+    private readonly tourPackageRepo: Repository<TourPackage>,
+
+    @InjectRepository(Booking)
+    private readonly bookingRepo: Repository<Booking>,
   ) {}
 
+  async create(createDto: CreateTicketDto): Promise<Ticket> {
+    const tourPackage = await this.tourPackageRepo.findOne({
+      where: { id: createDto.tourPackageId },
+    });
+    if (!tourPackage) {
+      throw new NotFoundException('Tour Package not found');
+    }
+
+    const booking = await this.bookingRepo.findOne({
+      where: { id: createDto.bookingId },
+    });
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    const ticket = this.ticketRepo.create({
+      travelerName: createDto.travelerName,
+      travelerEmail: createDto.travelerEmail,
+      travelerPhone: createDto.travelerPhone,
+      booking,
+      tourPackage,
+    });
+
+    return await this.ticketRepo.save(ticket);
+  }
+
   async findAll(): Promise<Ticket[]> {
-    try {
-      return await this.ticketRepo.find({ relations: ['user', 'tourPackage'] });
-    } catch (error) {
-      this.logger.error('Failed to fetch tickets', error.stack);
-      throw new InternalServerErrorException('Failed to fetch tickets');
-    }
+    return await this.ticketRepo.find({
+      relations: ['tourPackage', 'booking'],
+    });
   }
 
-  async findOne(id: string): Promise<Ticket> {
-    try {
-      const ticket = await this.ticketRepo.findOne({ where: { id }, relations: ['user', 'tourPackage'] });
-      if (!ticket) throw new NotFoundException('Ticket not found');
-      return ticket;
-    } catch (error) {
-      this.logger.error(`Failed to fetch ticket with id ${id}`, error.stack);
-      throw error;
+  async findOne(id: number): Promise<Ticket> {
+    const ticket = await this.ticketRepo.findOne({
+      where: { id },
+      relations: ['tourPackage', 'booking'],
+    });
+
+    if (!ticket) {
+      throw new NotFoundException('Ticket not found');
     }
+
+    return ticket;
   }
 
-  async create(data: Partial<Ticket>): Promise<Ticket> {
-    try {
-      const ticket = this.ticketRepo.create(data);
-      return await this.ticketRepo.save(ticket);
-    } catch (error) {
-      this.logger.error('Failed to create ticket', error.stack);
-      throw new InternalServerErrorException('Failed to create ticket');
+  async update(id: number, updateDto: UpdateTicketDto): Promise<Ticket> {
+    const ticket = await this.ticketRepo.findOne({ where: { id } });
+    if (!ticket) {
+      throw new NotFoundException('Ticket not found');
     }
+
+    if (updateDto.tourPackageId) {
+      const tour = await this.tourPackageRepo.findOne({
+        where: { id: updateDto.tourPackageId },
+      });
+      if (!tour) throw new BadRequestException('Invalid Tour Package');
+      ticket.tourPackage = tour;
+    }
+
+    if (updateDto.bookingId) {
+      const booking = await this.bookingRepo.findOne({
+        where: { id: updateDto.bookingId },
+      });
+      if (!booking) throw new BadRequestException('Invalid Booking');
+      ticket.booking = booking;
+    }
+
+    Object.assign(ticket, updateDto);
+    return await this.ticketRepo.save(ticket);
   }
 
-  async update(id: string, data: Partial<Ticket>): Promise<Ticket> {
-    try {
-      await this.ticketRepo.update(id, data);
-      return this.findOne(id);
-    } catch (error) {
-      this.logger.error(`Failed to update ticket ${id}`, error.stack);
-      throw new InternalServerErrorException('Failed to update ticket');
+  async remove(id: number): Promise<void> {
+    const ticket = await this.ticketRepo.findOne({ where: { id } });
+    if (!ticket) {
+      throw new NotFoundException('Ticket not found');
     }
-  }
 
-  async remove(id: string): Promise<void> {
-    try {
-      await this.ticketRepo.softDelete(id);
-    } catch (error) {
-      this.logger.error(`Failed to delete ticket ${id}`, error.stack);
-      throw new InternalServerErrorException('Failed to delete ticket');
-    }
+    await this.ticketRepo.remove(ticket);
   }
 }
-

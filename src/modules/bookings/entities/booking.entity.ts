@@ -1,76 +1,36 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
-  BeforeInsert,
-} from 'typeorm';
-// const uuidv4 = require('uuid').v4; 
+import { Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, OneToOne, Column ,JoinColumn} from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import { GuestUser } from '../../guest-users/entities/guest-user.entity';
 import { TourPackage } from '../../tour-packages/entities/tour-package.entity';
-
+import { Ticket } from '../../tickets/entities/ticket.entity';
+import { Payment } from '../../payment/entities/payment.entity'; 
 @Entity()
 export class Booking {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
-  @Column({ name: 'booking_reference', unique: true })
-  bookingReference: string;
-
-  @Column('int')
-  numberOfGuests: number;
-
-  @Column({ type: 'date' })
-  bookingDate: Date;
-
-  @Column({
-    type: 'enum',
-    enum: ['PENDING', 'CONFIRMED', 'CANCELLED'],
-    default: 'PENDING',
-  })
-  status: 'PENDING' | 'CONFIRMED' | 'CANCELLED';
-
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  totalAmount: number;
-
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
-
-  @DeleteDateColumn({ name: 'deleted_at', nullable: true })
-  deletedAt: Date;
-
-  @ManyToOne(() => User, (user) => user.bookings, {
-    nullable: true,
-    onDelete: 'SET NULL',
-  })
+  @ManyToOne(() => User, user => user.bookings)
+  @JoinColumn({ name: 'userId' })
   user: User;
 
-  @ManyToOne(() => GuestUser, (guestUser) => guestUser.bookings, {
-    nullable: true,
-    onDelete: 'SET NULL',
-  })
-  guestUser: GuestUser;
-
-  @ManyToOne(() => TourPackage, (tourPackage) => tourPackage.bookings, {
-    nullable: false,
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(() => TourPackage, tour => tour.bookings)
+  @JoinColumn({ name: 'tourPackageId' })
   tourPackage: TourPackage;
 
-  @BeforeInsert()
-  generateBookingReference() {
-    this.bookingReference =
-      'BK-' + Math.random().toString(36).substring(2, 10).toUpperCase();
-  }
-  // @BeforeInsert()
-  // generateId() {
-  //   this.id = uuidv4();
-  // }
+  @OneToMany(() => Ticket, ticket => ticket.booking)
+  tickets: Ticket[];
+
+  @OneToOne(() => Payment, payment => payment.booking, { cascade: true })
+  payment: Payment;
+
+  @Column({ type: 'timestamp' })
+  bookingDate: Date;
+
+  @Column({ type: 'int' })
+  numberOfPeople: number;
+
+  @Column({ default: 'pending' })
+  status: 'pending' | 'confirmed' | 'cancelled';
+
+  @Column({ nullable: true })
+  notes?: string;
 }

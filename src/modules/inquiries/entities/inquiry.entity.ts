@@ -1,60 +1,28 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
-  BeforeInsert,
-} from 'typeorm';
-// const uuidv4 = require('uuid').v4; 
-import { User } from '../../users/entities/user.entity';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, Column,JoinColumn } from 'typeorm';
 import { TourPackage } from '../../tour-packages/entities/tour-package.entity';
+import { User } from '../../users/entities/user.entity';
 import { GuestUser } from '../../guest-users/entities/guest-user.entity';
+import { join } from 'path';
 @Entity()
 export class Inquiry {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
-  @Column()
-  subject: string;
+  @ManyToOne(() => TourPackage, tour => tour.inquiries)
+  @JoinColumn({ name: 'tourPackageId' })
+  tourPackage: TourPackage;
+
+  @ManyToOne(() => User, user => user.inquiries, { nullable: true })
+  @JoinColumn({ name: 'userId' })
+  user?: User;
+
+  @ManyToOne(() => GuestUser, guest => guest.inquiries, { nullable: true })
+  @JoinColumn({ name: 'guestUserId' })
+  guestUser?: GuestUser;
 
   @Column({ type: 'text' })
   message: string;
 
-  @Column({ default: false })
-  isResolved: boolean;
-
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
-
-  @DeleteDateColumn({ name: 'deleted_at', nullable: true })
-  deletedAt: Date;
-
-  @ManyToOne(() => User, (user) => user.inquiries, {
-    onDelete: 'SET NULL',
-    nullable: true,
-  })
-  user: User;
-
-  @ManyToOne(() => TourPackage, (tourPackage) => tourPackage.inquiries, {
-    onDelete: 'SET NULL',
-    nullable: true,
-  })
-  tourPackage: TourPackage;
-
-  @ManyToOne(() => GuestUser, (guestUser) => guestUser.inquiries, {
-    nullable: true,
-    onDelete: 'SET NULL',
-  })
-  guestUser: GuestUser;
-
-  // @BeforeInsert()
-  // generateId() {
-  //   this.id = uuidv4();
-  // }
+  @Column({ type: 'timestamp' })
+  submittedAt: Date;
 }

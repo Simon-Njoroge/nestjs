@@ -1,63 +1,68 @@
-import { Injectable, Logger, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Inquiry } from './entities/inquiry.entity';
+import { CreateInquiryDto } from './dto/create-inquiry.dto';
+import { TourPackage } from '../tour-packages/entities/tour-package.entity';
+import { User } from '../users/entities/user.entity';
+import { GuestUser } from '../guest-users/entities/guest-user.entity';
 
 @Injectable()
 export class InquiriesService {
-  private readonly logger = new Logger(InquiriesService.name);
-
   constructor(
     @InjectRepository(Inquiry)
-    private inquiryRepo: Repository<Inquiry>,
+    private readonly inquiryRepo: Repository<Inquiry>,
+
+    @InjectRepository(TourPackage)
+    private readonly tourPackageRepo: Repository<TourPackage>,
+
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
+
+    @InjectRepository(GuestUser)
+    private readonly guestUserRepo: Repository<GuestUser>,
   ) {}
 
+  async create(createInquiryDto: CreateInquiryDto): Promise<Inquiry> {
+    const tour = await this.tourPackageRepo.findOne({ where: { id: createInquiryDto.tourPackageId } });
+    if (!tour) throw new NotFoundException('Tour package not found');
+
+    const inquiry = new Inquiry();
+    inquiry.tourPackage = tour;
+    inquiry.message = createInquiryDto.message;
+    inquiry.submittedAt = createInquiryDto.submittedAt;
+
+    if (createInquiryDto.userId) {
+      const user = await this.userRepo.findOne({ where: { id: createInquiryDto.userId } });
+      if (!user) throw new NotFoundException('User not found');
+      inquiry.user = user;
+    } else if (createInquiryDto.guestUserId) {
+      const guest = await this.guestUserRepo.findOne({ where: { id: createInquiryDto.guestUserId } });
+      if (!guest) throw new NotFoundException('Guest user not found');
+      inquiry.guestUser = guest;
+    }
+
+    return this.inquiryRepo.save(inquiry);
+  }
+
   async findAll(): Promise<Inquiry[]> {
-    try {
-      return await this.inquiryRepo.find({ relations: ['user', 'tourPackage', 'guestUser'] });
-    } catch (error) {
-      this.logger.error('Failed to fetch inquiries', error.stack);
-      throw new InternalServerErrorException('Failed to fetch inquiries');
-    }
+    return this.inquiryRepo.find({
+      relations: ['tourPackage', 'user', 'guestUser'],
+      order: { submittedAt: 'DESC' },
+    });
   }
 
-  async findOne(id: string): Promise<Inquiry> {
-    try {
-      const inquiry = await this.inquiryRepo.findOne({ where: { id }, relations: ['user', 'tourPackage', 'guestUser'] });
-      if (!inquiry) throw new NotFoundException('Inquiry not found');
-      return inquiry;
-    } catch (error) {
-      this.logger.error(`Failed to fetch inquiry with id ${id}`, error.stack);
-      throw error;
-    }
+  async findOne(id: number): Promise<Inquiry> {
+    const inquiry = await this.inquiryRepo.findOne({
+      where: { id },
+      relations: ['tourPackage', 'user', 'guestUser'],
+    });
+    if (!inquiry) throw new NotFoundException('Inquiry not found');
+    return inquiry;
   }
 
-  async create(data: Partial<Inquiry>): Promise<Inquiry> {
-    try {
-      const inquiry = this.inquiryRepo.create(data);
-      return await this.inquiryRepo.save(inquiry);
-    } catch (error) {
-      this.logger.error('Failed to create inquiry', error.stack);
-      throw new InternalServerErrorException('Failed to create inquiry');
-    }
-  }
-
-  async update(id: string, data: Partial<Inquiry>): Promise<Inquiry> {
-    try {
-      await this.inquiryRepo.update(id, data);
-      return this.findOne(id);
-    } catch (error) {
-      this.logger.error(`Failed to update inquiry ${id}`, error.stack);
-      throw new InternalServerErrorException('Failed to update inquiry');
-    }
-  }
-
-  async remove(id: string): Promise<void> {
-    try {
-      await this.inquiryRepo.softDelete(id);
-    } catch (error) {
-      this.logger.error(`Failed to delete inquiry ${id}`, error.stack);
-      throw new InternalServerErrorException('Failed to delete inquiry');
-    }
+  async remove(id: number): Promise<void> {
+    const inquiry = await this.findOne(id);
+    await this.inquiryRepo.remove(inquiry);
   }
 }

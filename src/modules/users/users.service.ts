@@ -75,7 +75,8 @@ async findOne(id: number): Promise<{ success: boolean; data: User; timestamp: st
 
   try {
     const user = await this.userRepository.findOne({
-      where: { id: id.toString() },
+      where: { id },
+      relations: ['bookings', 'inquiries', 'reviews'],
     });
     if (!user) {
       throw new Error(`User with ID ${id} not found`);

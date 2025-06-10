@@ -1,18 +1,18 @@
-import { IsString, IsEmail, IsOptional, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+
 export class CreateGuestUserDto {
-  @ApiProperty()
+  @ApiProperty({ example: 'Jane Doe', description: 'Full name of the guest user' })
   @IsString()
   @IsNotEmpty()
   fullName: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'jane@example.com', description: 'Email address of the guest user' })
   @IsEmail()
-  @IsNotEmpty()
   email: string;
 
-  @ApiProperty()
-  @IsString()
+  @ApiProperty({ example: '+1234567890', description: 'Phone number of the guest user (optional)', required: false })
   @IsOptional()
-  phoneNumber?: string;
+  @IsString()
+  phone?: string;
 }

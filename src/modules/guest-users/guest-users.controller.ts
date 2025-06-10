@@ -3,43 +3,47 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
 } from '@nestjs/common';
 import { GuestUsersService } from './guest-users.service';
 import { CreateGuestUserDto } from './dto/create-guest-user.dto';
-import { UpdateGuestUserDto } from './dto/update-guest-user.dto';
+import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { GuestUser } from './entities/guest-user.entity';
 
+@ApiTags('Guest Users')
+@ApiBearerAuth()
 @Controller('guest-users')
 export class GuestUsersController {
   constructor(private readonly guestUsersService: GuestUsersService) {}
 
   @Post()
-  create(@Body() createGuestUserDto: CreateGuestUserDto) {
+  @ApiOperation({ summary: 'Create a new guest user' })
+  @ApiResponse({ status: 201, description: 'Guest user created successfully', type: GuestUser })
+  create(@Body() createGuestUserDto: CreateGuestUserDto): Promise<GuestUser> {
     return this.guestUsersService.create(createGuestUserDto);
   }
 
   @Get()
-  findAll() {
+  @ApiOperation({ summary: 'Get all guest users' })
+  @ApiResponse({ status: 200, description: 'List of all guest users', type: [GuestUser] })
+  findAll(): Promise<GuestUser[]> {
     return this.guestUsersService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  @ApiOperation({ summary: 'Get guest user by ID' })
+  @ApiResponse({ status: 200, description: 'Guest user details', type: GuestUser })
+  @ApiResponse({ status: 404, description: 'Guest user not found' })
+  findOne(@Param('id') id: string): Promise<GuestUser> {
     return this.guestUsersService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateGuestUserDto: UpdateGuestUserDto,
-  ) {
-    return this.guestUsersService.update(+id, updateGuestUserDto);
-  }
-
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  @ApiOperation({ summary: 'Delete guest user by ID' })
+  @ApiResponse({ status: 200, description: 'Guest user deleted successfully' })
+  @ApiResponse({ status: 404, description: 'Guest user not found' })
+  remove(@Param('id') id: string): Promise<void> {
     return this.guestUsersService.remove(+id);
   }
 }

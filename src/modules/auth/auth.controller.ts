@@ -1,4 +1,12 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, Req, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  Req,
+  Param,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -25,7 +33,10 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login with email and password' })
-  @ApiResponse({ status: 200, description: 'Tokens returned on successful login' })
+  @ApiResponse({
+    status: 200,
+    description: 'Tokens returned on successful login',
+  })
   async login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto.email, loginDto.password);
   }
@@ -40,9 +51,23 @@ export class AuthController {
   @Post('logout/:id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Logout and invalidate refresh token' })
-  async logout(@Param('id') id:number) {
-    Logger.info('logged out successfully')
+  async logout(@Param('id') id: number) {
+    Logger.info('logged out successfully');
     return this.authService.logout(id);
-
+  }
+  
+  @Public()
+  @Post('forgot-password')
+  forgotPassword(@Body('email') email: string) {
+    return this.authService.forgotPassword(email);
+  }
+  
+  @Public()
+  @Post('reset-password')
+  resetPassword(
+    @Body('token') token: string,
+    @Body('newPassword') newPassword: string,
+  ) {
+    return this.authService.resetPassword(token, newPassword);
   }
 }

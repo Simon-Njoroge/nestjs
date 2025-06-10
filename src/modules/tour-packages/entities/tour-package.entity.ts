@@ -1,82 +1,40 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
-  OneToMany,
-  BeforeInsert,
-  JoinColumn
-} from 'typeorm';
-import { User } from '../../users/entities/user.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Booking } from '../../bookings/entities/booking.entity';
 import { Ticket } from '../../tickets/entities/ticket.entity';
 import { Inquiry } from '../../inquiries/entities/inquiry.entity';
-import { Booking } from '../../bookings/entities/booking.entity';
-// const uuidv4 = require('uuid').v4; 
+import { Review } from '../../review/entities/review.entity';
 @Entity()
 export class TourPackage {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
   title: string;
 
-  @Column()
+  @Column({ type: 'text' })
   description: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column()
+  location: string;
+
+  @Column({ type: 'decimal' })
   price: number;
 
   @Column()
-  destination: string;
+  durationDays: number;
 
-  @Column({ name: 'start_date' })
-  startDate: Date;
+  @Column({ nullable: true })
+  imageUrl?: string;
 
-  @Column({ name: 'end_date' })
-  endDate: Date;
-
-  @Column({ default: true })
-  isActive: boolean;
-
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
-
-  @DeleteDateColumn({ name: 'deleted_at', nullable: true })
-  deletedAt: Date;
-
-  @ManyToOne(() => User, (user) => user.tourPackages, {
-    onDelete: 'SET NULL',
-    nullable: true,
-  })
-  @JoinColumn({ name: 'user_id' })
-  user: User;
-
-  @OneToMany(() => Ticket, (ticket) => ticket.tourPackage, {
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
-  tickets: Ticket[];
-
-  @OneToMany(() => Inquiry, (inquiry) => inquiry.tourPackage, {
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
-  inquiries: Inquiry[];
-
-  @OneToMany(() => Booking, (booking) => booking.tourPackage, {
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
+  @OneToMany(() => Booking, booking => booking.tourPackage)
   bookings: Booking[];
 
-  // @BeforeInsert()
-  // generateId() {
-  //   this.id = uuidv4();
-  // }
+  @OneToMany(() => Ticket, ticket => ticket.tourPackage)
+  tickets: Ticket[];
+
+  @OneToMany(() => Inquiry, inquiry => inquiry.tourPackage)
+  inquiries: Inquiry[];
+
+  @OneToMany(() => Review, review => review.tourPackage)
+  reviews: Review[];
 }

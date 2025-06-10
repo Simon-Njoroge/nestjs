@@ -1,102 +1,36 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToMany,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
-  BeforeInsert,
-  BeforeUpdate,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Booking } from '../../bookings/entities/booking.entity';
-import { Ticket } from '../../tickets/entities/ticket.entity';
 import { Inquiry } from '../../inquiries/entities/inquiry.entity';
-import { Exclude } from 'class-transformer';
-import { Role } from '../../../common/constants';
-import { TourPackage } from '../../tour-packages/entities/tour-package.entity';
- 
-
+import { Review } from '../../review/entities/review.entity';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
+
+  @Column()
+  fullName: string;
 
   @Column({ unique: true })
   email: string;
 
   @Column()
-  @Exclude()
   password: string;
 
-  @Column({ name: 'first_name' })
-  firstName: string;
+  @Column({ nullable: true })
+  phone?: string;
 
-  @Column({ name: 'last_name' })
-  lastName: string;
+  @Column({ nullable: true })
+  refreshToken?: string;
 
-  @Column({
-    type: 'enum',
-    enum: Role,
-    default: Role.USER,
-  })
-  role: Role;
+  @Column({ type: 'timestamp', nullable: true })
+  lastLogin?: Date;
 
-  @Column({ name: 'phone_number', nullable: true })
-  phoneNumber: string;
-
-  @Column({ name: 'profile_picture', nullable: true })
-  profilePicture: string;
-
-  @Column({ name: 'refresh_token', nullable: true })
-  @Exclude()
-  refreshToken: string;
-
-  @Column({ name: 'last_login', nullable: true })
-  lastLogin: Date;
-
-  @Column({ default: true })
-  isActive: boolean;
-
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
-
-  @DeleteDateColumn({ name: 'deleted_at', nullable: true })
-  deletedAt: Date;
-
-  @OneToMany(() => Booking, (booking) => booking.user, {
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
+  @OneToMany(() => Booking, booking => booking.user)
   bookings: Booking[];
 
-  @OneToMany(() => Ticket, (ticket) => ticket.user, {
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
-  tickets: Ticket[];
-
-  @OneToMany(() => Inquiry, (inquiry) => inquiry.user, {
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
+  @OneToMany(() => Inquiry, inquiry => inquiry.user)
   inquiries: Inquiry[];
 
-  @OneToMany(() => TourPackage, (tourPackage) => tourPackage.user, {
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
-  tourPackages: TourPackage[];
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  async validate() {
-    if (this.email) {
-      this.email = this.email.toLowerCase().trim();
-    }
-  }
-
+  @OneToMany(() => Review, review => review.user)
+  reviews: Review[];
 }

@@ -1,6 +1,6 @@
 @url = http://localhost:8000
 
-@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwMDIsImVtYWlsIjoidXNlcjEwMDFAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDk0NTkxMjQsImV4cCI6MTc0OTQ2MDAyNH0.Hz5kkm0PRJSfHTR2wABk_LIwkI69N9gyFZg-sy-hqpQ
+@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwMDEsImVtYWlsIjoidXNlckBleGFtcGxlLmNvbSIsImlhdCI6MTc0OTU2MzcwMiwiZXhwIjoxNzQ5NTY0NjAyfQ.sRtrXBM3lZd0Hyh1mhynCXYn4vc7DwQs2mk_-rTNV0A
 @refresh_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwMDIsImVtYWlsIjoidXNlcjEwMDFAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDk0NTkxMjQsImV4cCI6MTc1MDA2MzkyNH0.G82dgORK7HQGI4sL8zt7_5DTRuS_vX7YXBT8-8RZvv8
 
 
@@ -20,12 +20,12 @@ POST {{url}}/users
 Content-Type: application/json
 
 {
-  "email": "user1001@example.com",
+  "email": "mukirisimon22@gmail.com",
   "password": "securePass123",
-  "firstName": "John",
-  "lastName": "Doe",
+  "firstName": "simon",
+  "lastName": "njoroge",
   "role": "user",
-  "phoneNumber": "+1234567890",
+  "phoneNumber": "+254717322552",
   "profilePicture": "https://example.com/images/profile.jpg"
 }
 
@@ -62,7 +62,7 @@ POST {{url}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "user1001@example.com",
+  "email": "user@example.com",
   "password": "securePass123"
 }
 
@@ -70,6 +70,32 @@ Content-Type: application/json
 ###
 POST {{url}}/auth/logout/1
 Authorization:  Bearer {{access_token}}
+
+
+### refresh-token
+###
+POST {{url}}/auth/refresh-token
+
+
+### forgot-password
+###
+POST {{url}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "mukirisimon22@gmail.com"
+}
+
+### Reset Password
+###
+POST {{url}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "token":"",
+  "newPassword": "newSecurePass123"
+}
+
 
 ### tour-package
 ### Create a new tour package
@@ -86,7 +112,7 @@ Content-Type: application/json
   "endDate": "2023-10-06",
   "location": "Paris, France",
   "coverImage": "https://example.com/images/tour.jpg",
-  "itinerary": "Day 1: Arrival in Paris, Day 2: Eiffel Tower, Day 3: Louvre Museum, Day 4: Seine River Cruise, Day 5: Montmartre, Day 6: Departure",
+  "itinerary": "hi"
 }
 
 ### Get all tour packages
@@ -120,6 +146,7 @@ Authorization:  Bearer {{access_token}}
 ###
 POST {{url}}/bookings
 Content-Type: application/json
+Authorization: Bearer {{access_token}}
 
 {
   "userId": 1,
@@ -221,5 +248,8 @@ Content-Type: application/json
   "subject": "Updated Inquiry about tour packages",
   "message": "I would like"
 }
+
+
+
 
 

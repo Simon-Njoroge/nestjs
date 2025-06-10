@@ -1,64 +1,72 @@
-import { Injectable, Logger, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Booking } from './entities/booking.entity';
+import { CreateBookingDto } from './dto/create-booking.dto';
+import { User } from '../../modules/users/entities/user.entity';
+import { TourPackage } from '../../modules/tour-packages/entities/tour-package.entity';
 
 @Injectable()
 export class BookingsService {
-  private readonly logger = new Logger(BookingsService.name);
-
   constructor(
     @InjectRepository(Booking)
-    private bookingRepo: Repository<Booking>,
+    private readonly bookingRepo: Repository<Booking>,
+
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
+
+    @InjectRepository(TourPackage)
+    private readonly tourRepo: Repository<TourPackage>,
   ) {}
 
+  async create(dto: CreateBookingDto): Promise<Booking> {
+    const user = await this.userRepo.findOne({ where: { id: dto.userId } });
+    const tour = await this.tourRepo.findOne({ where: { id: dto.tourPackageId } });
+
+    if (!user || !tour) {
+      throw new BadRequestException('Invalid user or tour package');
+    }
+
+    const booking = this.bookingRepo.create({
+      user,
+      tourPackage: tour,
+      bookingDate: new Date(dto.bookingDate),
+      numberOfPeople: dto.numberOfPeople,
+      status: dto.status || 'pending',
+      notes: dto.notes,
+    });
+
+    return this.bookingRepo.save(booking);
+  }
+
   async findAll(): Promise<Booking[]> {
-    try {
-      return await this.bookingRepo.find({ relations: ['user', 'guestUser', 'tourPackage'] });
-    } catch (error) {
-      this.logger.error('Failed to fetch bookings', error.stack);
-      throw new InternalServerErrorException('Failed to fetch bookings');
-    }
+    return this.bookingRepo.find({
+      relations: ['user', 'tourPackage', 'tickets', 'payment'],
+      order: { bookingDate: 'DESC' },
+    });
   }
 
-  async findOne(id: string): Promise<Booking> {
-    try {
-      const booking = await this.bookingRepo.findOne({ where: { id }, relations: ['user', 'guestUser', 'tourPackage'] });
-      if (!booking) throw new NotFoundException('Booking not found');
-      return booking;
-    } catch (error) {
-      this.logger.error(`Failed to fetch booking with id ${id}`, error.stack);
-      throw error;
+  async findOne(id: number): Promise<Booking> {
+    const booking = await this.bookingRepo.findOne({
+      where: { id },
+      relations: ['user', 'tourPackage', 'tickets', 'payment'],
+    });
+
+    if (!booking) {
+      throw new NotFoundException(`Booking with ID ${id} not found`);
     }
+
+    return booking;
   }
 
-  async create(data: Partial<Booking>): Promise<Booking> {
-    try {
-      const booking = this.bookingRepo.create(data);
-      return await this.bookingRepo.save(booking);
-    } catch (error) {
-      this.logger.error('Failed to create booking', error.stack);
-      throw new InternalServerErrorException('Failed to create booking');
-    }
+  async remove(id: number): Promise<void> {
+    const booking = await this.findOne(id);
+    await this.bookingRepo.remove(booking);
   }
 
-  async update(id: string, data: Partial<Booking>): Promise<Booking> {
-    try {
-      await this.bookingRepo.update(id, data);
-      return this.findOne(id);
-    } catch (error) {
-      this.logger.error(`Failed to update booking ${id}`, error.stack);
-      throw new InternalServerErrorException('Failed to update booking');
-    }
-  }
-
-  async remove(id: string): Promise<void> {
-    try {
-      await this.bookingRepo.softDelete(id);
-    } catch (error) {
-      this.logger.error(`Failed to delete booking ${id}`, error.stack);
-      throw new InternalServerErrorException('Failed to delete booking');
-    }
+  async updateStatus(id: number, status: 'pending' | 'confirmed' | 'cancelled'): Promise<Booking> {
+    const booking = await this.findOne(id);
+    booking.status = status;
+    return this.bookingRepo.save(booking);
   }
 }
-

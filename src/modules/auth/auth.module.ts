@@ -8,6 +8,7 @@ import { User } from '../users/entities/user.entity';
 import { Auth } from './entities/auth.entity';
 import { DatabaseModule } from 'src/config/database.module';
 import { AtStrategy } from 'src/common/strategies/at.strategy';
+import { EmailModule } from 'src/common/utils/email/email.module';
 @Module({
   imports: [
     DatabaseModule,
@@ -24,6 +25,7 @@ import { AtStrategy } from 'src/common/strategies/at.strategy';
     }),
 
     ConfigModule,
+    EmailModule
   ],
   controllers: [AuthController],
   providers: [AuthService,AtStrategy],

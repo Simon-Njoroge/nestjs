@@ -1,52 +1,31 @@
-import {
-  IsString,
-  IsNotEmpty,
-  IsOptional,
-  IsNumber,
-  IsDateString,
-  IsUrl,
-  IsArray,
-  Min,
-} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsOptional, IsNumber, IsPositive } from 'class-validator';
+
 export class CreateTourPackageDto {
-  @ApiProperty()
+  @ApiProperty({ description: 'Title of the tour package' })
   @IsString()
-  @IsNotEmpty()
   title: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'Detailed description of the tour package' })
   @IsString()
-  @IsNotEmpty()
   description: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'Location of the tour package' })
+  @IsString()
+  location: string;
+
+  @ApiProperty({ description: 'Price of the tour package', example: 199.99 })
   @IsNumber()
-  @Min(0)
+  @IsPositive()
   price: number;
 
-  @ApiProperty()
-  @IsDateString()
-  @IsNotEmpty()
-  startDate: Date;
+  @ApiProperty({ description: 'Duration in days of the tour package', example: 5 })
+  @IsNumber()
+  @IsPositive()
+  durationDays: number;
 
-  @ApiProperty()
-  @IsDateString()
-  @IsNotEmpty()
-  endDate: Date;
-
-  @ApiProperty()
+  @ApiProperty({ description: 'Optional image URL for the tour package', required: false })
+  @IsOptional()
   @IsString()
-  @IsOptional()
-  location?: string;
-
-  @ApiProperty()
-  @IsUrl()
-  @IsOptional()
-  coverImage?: string;
-
-  @ApiProperty()
-  @IsArray()
-  @IsOptional()
-  itinerary?: string[];
+  imageUrl?: string;
 }

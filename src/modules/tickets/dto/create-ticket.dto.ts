@@ -1,40 +1,33 @@
-import {
-  IsNotEmpty,
-  IsString,
-  IsUUID,
-  IsNumber,
-  IsEnum,
-} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-export enum TicketStatus {
-  PENDING = 'PENDING',
-  CONFIRMED = 'CONFIRMED',
-  CANCELLED = 'CANCELLED',
-}
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
 
 export class CreateTicketDto {
-  @ApiProperty()
-  @IsUUID()
-  @IsNotEmpty()
-  bookingId: string;
-
-  @ApiProperty()
-  @IsUUID()
-  @IsNotEmpty()
-  tourPackageId: string;
-
-  @ApiProperty()
-  @IsUUID()
-  @IsNotEmpty()
-  userId: string;
-
-  @ApiProperty()
+  @ApiProperty({ example: 1, description: 'ID of the associated Tour Package' })
   @IsNumber()
   @IsNotEmpty()
-  price: number;
+  tourPackageId: number;
 
-  @ApiProperty()
-  @IsEnum(TicketStatus)
+  @ApiProperty({ example: 101, description: 'ID of the associated Booking' })
+  @IsNumber()
   @IsNotEmpty()
-  status: TicketStatus;
+  bookingId: number;
+
+  @ApiProperty({ example: 'John Doe', description: 'Name of the traveler' })
+  @IsString()
+  @IsNotEmpty()
+  travelerName: string;
+
+  @ApiProperty({ example: 'john@example.com', description: 'Email of the traveler' })
+  @IsEmail()
+  travelerEmail: string;
+
+  @ApiProperty({ example: '+1234567890', description: 'Phone number of the traveler' })
+  @IsString()
+  @IsNotEmpty()
+  travelerPhone: string;
 }

@@ -1,53 +1,19 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
-  OneToMany,
-  BeforeInsert,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Inquiry } from '../../inquiries/entities/inquiry.entity';
-import { Booking } from '../../bookings/entities/booking.entity';
-// const uuidv4 = require('uuid').v4; 
-
 @Entity()
 export class GuestUser {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
-  @Column({ name: 'full_name' })
+  @Column()
   fullName: string;
 
-  @Column({ unique: true })
+  @Column()
   email: string;
 
-  @Column({ name: 'phone_number', nullable: true })
-  phoneNumber: string;
+  @Column({ nullable: true })
+  phone?: string;
 
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
-
-  @DeleteDateColumn({ name: 'deleted_at', nullable: true })
-  deletedAt: Date;
-
-  @OneToMany(() => Inquiry, (inquiry) => inquiry.guestUser, {
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
+  @OneToMany(() => Inquiry, inquiry => inquiry.guestUser)
   inquiries: Inquiry[];
-
-  @OneToMany(() => Booking, (booking) => booking.guestUser, {
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
-  bookings: Booking[];
-  // @BeforeInsert()
-  // generateId() {
-  //   this.id = uuidv4();
-  // }
 }

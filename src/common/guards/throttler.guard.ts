@@ -13,13 +13,14 @@ export class CustomThrottlerGuard extends ThrottlerGuard {
     throw new HttpException(
       {
         statusCode: HttpStatus.TOO_MANY_REQUESTS,
-        message: '⏳ Too many requests 😤. Please slow down and try again later.',
+        message:
+          '⏳ Too many requests 😤. Please slow down and try again later.',
       },
       HttpStatus.TOO_MANY_REQUESTS,
     );
   }
 
-  protected async getTracker(req: Record<string, any>): Promise<string> {
+  protected getTracker(req: Record<string, any>): string {
     // Use user ID if available, otherwise fallback to IP
     return req.user?.id?.toString() || req.ip;
   }

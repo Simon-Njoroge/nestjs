@@ -5,12 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Payment } from './entities/payment.entity';
 import { Booking } from '../bookings/entities/booking.entity';
 import { DatabaseModule } from 'src/config/database.module';
+import { MpesaModule } from 'src/common/utils/payment/mpesa.module';
 
 @Module({
-  imports: [
-    DatabaseModule,
-    TypeOrmModule.forFeature([Payment, Booking]),
-  ],
+  imports: [DatabaseModule, TypeOrmModule.forFeature([Payment, Booking]),MpesaModule],
   controllers: [PaymentController],
   providers: [PaymentService],
 })

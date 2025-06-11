@@ -11,8 +11,16 @@ import {
 import { ReviewService } from './review.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { Review } from './entities/review.entity';
+import { Claims } from 'src/common/decorators/claims.decorator';
+import { ClaimsGuard } from 'src/common/guards/claims.guard';
+import { AtGuard } from 'src/common/guards/at.guard';
 
 @ApiTags('Reviews')
 @ApiBearerAuth()
@@ -29,7 +37,11 @@ export class ReviewController {
 
   @Get()
   @ApiOperation({ summary: 'Get all reviews' })
-  @ApiResponse({ status: 200, description: 'List of all reviews', type: [Review] })
+  @ApiResponse({
+    status: 200,
+    description: 'List of all reviews',
+    type: [Review],
+  })
   findAll() {
     return this.reviewService.findAll();
   }

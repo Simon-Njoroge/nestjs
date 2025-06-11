@@ -24,7 +24,9 @@ export class ReviewService {
     const user = await this.userRepo.findOne({ where: { id: dto.userId } });
     if (!user) throw new NotFoundException('User not found');
 
-    const tour = await this.tourPackageRepo.findOne({ where: { id: dto.tourPackageId } });
+    const tour = await this.tourPackageRepo.findOne({
+      where: { id: dto.tourPackageId },
+    });
     if (!tour) throw new NotFoundException('Tour package not found');
 
     const review = this.reviewRepo.create({

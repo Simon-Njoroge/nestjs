@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Booking } from './entities/booking.entity';
@@ -21,7 +25,9 @@ export class BookingsService {
 
   async create(dto: CreateBookingDto): Promise<Booking> {
     const user = await this.userRepo.findOne({ where: { id: dto.userId } });
-    const tour = await this.tourRepo.findOne({ where: { id: dto.tourPackageId } });
+    const tour = await this.tourRepo.findOne({
+      where: { id: dto.tourPackageId },
+    });
 
     if (!user || !tour) {
       throw new BadRequestException('Invalid user or tour package');
@@ -64,7 +70,10 @@ export class BookingsService {
     await this.bookingRepo.remove(booking);
   }
 
-  async updateStatus(id: number, status: 'pending' | 'confirmed' | 'cancelled'): Promise<Booking> {
+  async updateStatus(
+    id: number,
+    status: 'pending' | 'confirmed' | 'cancelled',
+  ): Promise<Booking> {
     const booking = await this.findOne(id);
     booking.status = status;
     return this.bookingRepo.save(booking);

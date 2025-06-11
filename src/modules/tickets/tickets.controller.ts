@@ -12,11 +12,19 @@ import {
 import { TicketsService } from './tickets.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 // import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Ticket } from './entities/ticket.entity';
+import { Claims } from 'src/common/decorators/claims.decorator';
+import { ClaimsGuard } from 'src/common/guards/claims.guard';
+import { AtGuard } from 'src/common/guards/at.guard';
 
-@ApiTags('Tickets')
+@ApiTags('tickets')
 @ApiBearerAuth()
 // @UseGuards(JwtAuthGuard)
 @Controller('tickets')
@@ -30,6 +38,8 @@ export class TicketsController {
     return this.ticketService.create(createTicketDto);
   }
 
+  @UseGuards(AtGuard, ClaimsGuard)
+  @Claims('admin', 'get:tickets')
   @Get()
   @ApiOperation({ summary: 'Get all tickets' })
   @ApiResponse({ status: 200, description: 'List of tickets', type: [Ticket] })
@@ -37,6 +47,8 @@ export class TicketsController {
     return this.ticketService.findAll();
   }
 
+  @UseGuards(AtGuard, ClaimsGuard)
+  @Claims('admin', 'get:tickets')
   @Get(':id')
   @ApiOperation({ summary: 'Get a ticket by ID' })
   @ApiResponse({ status: 200, description: 'Found ticket', type: Ticket })

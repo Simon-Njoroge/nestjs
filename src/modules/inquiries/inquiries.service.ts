@@ -24,7 +24,9 @@ export class InquiriesService {
   ) {}
 
   async create(createInquiryDto: CreateInquiryDto): Promise<Inquiry> {
-    const tour = await this.tourPackageRepo.findOne({ where: { id: createInquiryDto.tourPackageId } });
+    const tour = await this.tourPackageRepo.findOne({
+      where: { id: createInquiryDto.tourPackageId },
+    });
     if (!tour) throw new NotFoundException('Tour package not found');
 
     const inquiry = new Inquiry();
@@ -33,11 +35,15 @@ export class InquiriesService {
     inquiry.submittedAt = createInquiryDto.submittedAt;
 
     if (createInquiryDto.userId) {
-      const user = await this.userRepo.findOne({ where: { id: createInquiryDto.userId } });
+      const user = await this.userRepo.findOne({
+        where: { id: createInquiryDto.userId },
+      });
       if (!user) throw new NotFoundException('User not found');
       inquiry.user = user;
     } else if (createInquiryDto.guestUserId) {
-      const guest = await this.guestUserRepo.findOne({ where: { id: createInquiryDto.guestUserId } });
+      const guest = await this.guestUserRepo.findOne({
+        where: { id: createInquiryDto.guestUserId },
+      });
       if (!guest) throw new NotFoundException('Guest user not found');
       inquiry.guestUser = guest;
     }

@@ -10,15 +10,12 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
 
 // Your modules...
 import { UsersModule } from './modules/users/users.module';
-import { AdminModule } from './modules/admin/admin.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { GuestUsersModule } from './modules/guest-users/guest-users.module';
 import { TourPackagesModule } from './modules/tour-packages/tour-packages.module';
 import { BookingsModule } from './modules/bookings/bookings.module';
 import { TicketsModule } from './modules/tickets/tickets.module';
 import { InquiriesModule } from './modules/inquiries/inquiries.module';
-import { AdminLogsModule } from './modules/admin-logs/admin-logs.module';
-import { LogsModule } from './modules/logs/logs.module';
 import { CacheInterceptor } from '@nestjs/cache-manager';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CaslModule } from './modules/casl/casl.module';
@@ -28,16 +25,16 @@ import * as redisStore from 'cache-manager-ioredis';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { CustomThrottlerGuard } from './common/guards/throttler.guard';
 
-
 @Module({
   imports: [
-   ThrottlerModule.forRoot({
-      throttlers: [
-        {
-          ttl: 60000,
-          limit: 10,
-        },
-      ],
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        ttl: config.getOrThrow('THROTTLE_TTL'),
+        limit: config.getOrThrow('THROTTLE_LIMIT'),
+        ignoreUserAgents: [/^curl\//, /^PostmanRuntime\//],
+      }),
     }),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -55,15 +52,12 @@ import { CustomThrottlerGuard } from './common/guards/throttler.guard';
       }),
     }),
     UsersModule,
-    AdminModule,
     AuthModule,
     GuestUsersModule,
     TourPackagesModule,
     BookingsModule,
     TicketsModule,
     InquiriesModule,
-    AdminLogsModule,
-    LogsModule,
     CaslModule,
     ReviewModule,
     PaymentModule,

@@ -26,15 +26,15 @@ export class TourPackage {
   @Column({ nullable: true })
   imageUrl?: string;
 
-  @OneToMany(() => Booking, booking => booking.tourPackage)
+  @OneToMany(() => Booking, (booking) => booking.tourPackage)
   bookings: Booking[];
 
-  @OneToMany(() => Ticket, ticket => ticket.tourPackage)
+  @OneToMany(() => Ticket, (ticket) => ticket.tourPackage)
   tickets: Ticket[];
 
-  @OneToMany(() => Inquiry, inquiry => inquiry.tourPackage)
+  @OneToMany(() => Inquiry, (inquiry) => inquiry.tourPackage)
   inquiries: Inquiry[];
 
-  @OneToMany(() => Review, review => review.tourPackage)
+  @OneToMany(() => Review, (review) => review.tourPackage)
   reviews: Review[];
 }

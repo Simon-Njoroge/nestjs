@@ -12,12 +12,13 @@ import { ConfigService } from '@nestjs/config';
 import './polyfill';
 import { Logger } from './common/utils/logger';
 import helmet from 'helmet';
+import * as bodyParser from 'body-parser';
 // import { RolesGuard } from './common/guards/roles.guard';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // Enable CORS
-    app.enableCors({
+  app.enableCors({
     origin: [
       'http://localhost:8000', // for development
     ],
@@ -26,27 +27,27 @@ async function bootstrap() {
     credentials: true,
   });
 
-
   // Enable Helmet for security
   app.use(
-  helmet({
-    contentSecurityPolicy: {
-      useDefaults: true,
-      directives: {
-        "img-src": ["'self'", 'data:', 'https:'],
-        "script-src": ["'self'", "'unsafe-inline'"],
+    helmet({
+      contentSecurityPolicy: {
+        useDefaults: true,
+        directives: {
+          'img-src': ["'self'", 'data:', 'https:'],
+          'script-src': ["'self'", "'unsafe-inline'"],
+        },
       },
-    },
-    crossOriginEmbedderPolicy: false, // disable if using cross-origin media
-  })
-);
-
+      crossOriginEmbedderPolicy: false, // disable if using cross-origin media
+    }),
+  );
 
   // Cookie parser middleware
   app.use(cookieParser());
 
   // Logger middleware
   // app.use(LoggerMiddleware);
+
+  app.use(bodyParser.json({ type: 'application/json' }));
 
   // Global pipes
   app.useGlobalPipes(
@@ -65,7 +66,6 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setViewEngine('hbs');
-
   if (process.env.NODE_ENV !== 'production') {
     const config = new DocumentBuilder()
       .setTitle('🌍 Tourism Management System API')
@@ -94,34 +94,47 @@ Each module (Bookings, Tours, Users, Payments, etc.) is tagged for easy navigati
 `,
       )
       .setVersion('1.0')
-      .addBearerAuth(
-        {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
-          name: 'Authorization',
-          in: 'header',
-        },
-        'access-token', // Custom name for Swagger UI
-      )
+      .addBearerAuth()
+      .addSecurityRequirements('bearer')
+      .addTag('Auth', 'Authentication & Authorization')
+      .addTag('Users', 'User management (registered & guest)')
+      .addTag('Tours', 'Tour Packages & Details')
+      .addTag('Bookings', 'Booking and Ticketing')
+      .addTag('Payments', 'Payment integration & receipts')
+      .addTag('Inquiries', 'Customer inquiries & feedback')
+      .addTag('Reviews', 'User reviews & ratings')
+      .addTag('guest', 'Guest user operations')
+      .addTag('tickets', 'Ticket management')
       .build();
+
 
     const document = SwaggerModule.createDocument(app, config);
 
     SwaggerModule.setup('api-docs', app, document, {
       jsonDocumentUrl: '/api-docs-json',
       customSiteTitle: '🌐 Tourism API Docs',
-      customfavIcon: 'https://cdn-icons-png.flaticon.com/512/1975/1975728.png', // Optional favicon
+      customfavIcon: 'https://cdn-icons-png.flaticon.com/512/1975/1975728.png',
       customCss: `
-      .topbar-wrapper img { content:url('https://cdn-icons-png.flaticon.com/512/3079/3079120.png'); height: 40px; }
-      .swagger-ui .topbar { background-color: #003049; }
-      .swagger-ui .info hgroup.main > h2, 
-      .swagger-ui .info hgroup.main > h1 { color: #003049; font-weight: bold; }
+      .swagger-ui .topbar-wrapper { display: none; }
+      .swagger-ui .info hgroup.main > h1, 
+      .swagger-ui .info hgroup.main > h2 { 
+        color: #003049; 
+        font-weight: bold; 
+      }
       .swagger-ui .opblock.opblock-post .opblock-summary-method { background-color: #2a9d8f; }
       .swagger-ui .opblock.opblock-get .opblock-summary-method { background-color: #0077b6; }
       .swagger-ui .opblock.opblock-delete .opblock-summary-method { background-color: #d62828; }
       .swagger-ui .opblock.opblock-put .opblock-summary-method { background-color: #f77f00; }
       .swagger-ui .btn.execute { background-color: #264653; border-color: #264653; }
+      .swagger-ui .info { margin-bottom: 20px; border-left: 6px solid #003049; padding-left: 20px; background-color: #f1f1f1; border-radius: 8px; }
+    `,
+      customJs: `
+      window.onload = function() {
+        const welcome = document.createElement('div');
+        welcome.innerHTML = "<div style='padding:1rem;background:#003049;color:white;border-radius:10px;margin-bottom:1rem;text-align:center;font-size:18px;font-weight:bold;'>Welcome to the Tourism Management System API 🎉</div>";
+        const info = document.querySelector('.swagger-ui .info');
+        if (info && welcome) info.parentNode.insertBefore(welcome, info);
+      }
     `,
     });
   }

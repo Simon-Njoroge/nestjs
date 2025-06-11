@@ -25,35 +25,51 @@ export class AuthService {
   async login(email: string, password: string) {
     const user = await this.userRepo.findOne({
       where: { email },
-      select: ['id', 'email', 'password', 'refreshToken'],
+      select: [
+        'id',
+        'email',
+        'password',
+        'fullName',
+        'role',
+        'phone',
+        'refreshToken',
+        'claims',
+      ],
     });
     if (!user) throw new UnauthorizedException('Invalid credentials');
 
     const match = await bcrypt.compare(password, user.password);
     if (!match) throw new UnauthorizedException('Invalid credentials');
 
-    const tokens = await this.getTokens(Number(user.id), user.email);
-    await this.updateRefreshToken(Number(user.id), tokens.refresh_token);
+    const tokens = await this.getTokens(user.id, user.email, user.claims);
+    await this.updateRefreshToken(user.id, tokens.refresh_token);
     await this.userRepo.update(user.id, { lastLogin: new Date() });
 
-    return tokens;
+    return {
+      tokens,
+      user: {
+        fullName: user.fullName,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        claims: user.claims,
+      },
+    };
   }
 
   async refreshTokens(userId: number, refreshToken: string) {
     const user = await this.userRepo.findOne({
       where: { id: userId },
-      select: ['id', 'email', 'refreshToken'],
+      select: ['id', 'email', 'refreshToken', 'claims'],
     });
-    if (!user) throw new UnauthorizedException('Access Denied');
-    if (!refreshToken) throw new UnauthorizedException('Refresh token missing');
-    if (user.id !== userId) throw new UnauthorizedException('Invalid user ID');
-    if (!user || !user.refreshToken) throw new UnauthorizedException('Access Denied');
+    if (!user || !refreshToken)
+      throw new UnauthorizedException('Access Denied');
 
     const match = await bcrypt.compare(refreshToken, user.refreshToken);
     if (!match) throw new UnauthorizedException('Invalid refresh token');
 
-    const tokens = await this.getTokens(Number(user.id), user.email);
-    await this.updateRefreshToken(Number(user.id), tokens.refresh_token);
+    const tokens = await this.getTokens(user.id, user.email, user.claims);
+    await this.updateRefreshToken(user.id, tokens.refresh_token);
 
     return tokens;
   }
@@ -62,15 +78,12 @@ export class AuthService {
     await this.userRepo.update(userId, { refreshToken: undefined });
   }
 
-  // ---------------- Forgot/Reset Password ----------------
-
   async forgotPassword(email: string): Promise<{ message: string }> {
     const user = await this.userRepo.findOne({ where: { email } });
-
-    // Always respond with a generic message for security
     if (!user) {
       return {
-        message: 'If your email is registered, you will receive a password reset link.',
+        message:
+          'If your email is registered, you will receive a password reset link.',
       };
     }
 
@@ -83,11 +96,15 @@ export class AuthService {
     await this.emailService.sendPasswordResetEmail(user.email, token);
 
     return {
-      message: 'If your email is registered, you will receive a password reset link.',
+      message:
+        'If your email is registered, you will receive a password reset link.',
     };
   }
 
-  async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
+  async resetPassword(
+    token: string,
+    newPassword: string,
+  ): Promise<{ message: string }> {
     try {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: this.config.getOrThrow('JWT_RESET_TOKEN_SECRET'),
@@ -105,10 +122,9 @@ export class AuthService {
     }
   }
 
-  // ---------------- Helper Methods ----------------
+  private async getTokens(userId: number, email: string, claims: string[]) {
+    const payload = { sub: userId, email, claims };
 
-  private async getTokens(userId: number, email: string) {
-    const payload = { sub: userId, email };
     const [access_token, refresh_token] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: this.config.getOrThrow('JWT_ACCESS_TOKEN_SECRET'),

@@ -10,8 +10,17 @@ import {
 } from '@nestjs/common';
 import { InquiriesService } from './inquiries.service';
 import { CreateInquiryDto } from './dto/create-inquiry.dto';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { Inquiry } from './entities/inquiry.entity';
+import { Claims } from 'src/common/decorators/claims.decorator';
+import { ClaimsGuard } from 'src/common/guards/claims.guard';
+import { AtGuard } from 'src/common/guards/at.guard';
+import { UseGuards } from '@nestjs/common';
 
 @ApiTags('Inquiries')
 @Controller('inquiries')
@@ -20,19 +29,31 @@ export class InquiriesController {
 
   @Post()
   @ApiOperation({ summary: 'Submit an inquiry (by user or guest)' })
-  @ApiResponse({ status: 201, description: 'Inquiry successfully created.', type: Inquiry })
+  @ApiResponse({
+    status: 201,
+    description: 'Inquiry successfully created.',
+    type: Inquiry,
+  })
   create(@Body() createInquiryDto: CreateInquiryDto): Promise<Inquiry> {
     return this.inquiryService.create(createInquiryDto);
   }
 
+  @UseGuards(AtGuard, ClaimsGuard)
+  @Claims('admin', 'get:inquiries')
   @Get()
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all inquiries' })
-  @ApiResponse({ status: 200, description: 'List of all inquiries.', type: [Inquiry] })
+  @ApiResponse({
+    status: 200,
+    description: 'List of all inquiries.',
+    type: [Inquiry],
+  })
   findAll(): Promise<Inquiry[]> {
     return this.inquiryService.findAll();
   }
 
+  @UseGuards(AtGuard, ClaimsGuard)
+  @Claims('admin', 'get:inquiries')
   @Get(':id')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get inquiry by ID' })

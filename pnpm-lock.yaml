@@ -47,6 +47,9 @@ importers:
       '@types/pg':
         specifier: ^8.15.2
         version: 8.15.2
+      body-parser:
+        specifier: ^2.2.0
+        version: 2.2.0
       cache-manager-ioredis:
         specifier: ^2.1.0
         version: 2.1.0

@@ -7,7 +7,6 @@ import { DatabaseModule } from 'src/config/database.module';
 import { User } from '../../modules/users/entities/user.entity';
 import { TourPackage } from '../../modules/tour-packages/entities/tour-package.entity';
 
-
 @Module({
   imports: [
     DatabaseModule,

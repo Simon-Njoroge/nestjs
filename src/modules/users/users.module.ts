@@ -4,8 +4,9 @@ import { UsersController } from './users.controller';
 import { DatabaseModule } from 'src/config/database.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
+import { EmailModule } from 'src/common/utils/email/email.module';
 @Module({
-  imports: [DatabaseModule, TypeOrmModule.forFeature([User])],
+  imports: [DatabaseModule, TypeOrmModule.forFeature([User]),EmailModule],
   controllers: [UsersController],
   providers: [UsersService],
 })

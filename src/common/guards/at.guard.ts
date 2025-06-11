@@ -1,13 +1,13 @@
-import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
-import { Reflector } from "@nestjs/core";
-import { ROLES_KEY, IS_PUBLIC_KEY } from "../constants"; 
-import { Role } from "../constants";
-import { Request } from "express";
-import { Observable } from "rxjs";
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { Reflector } from '@nestjs/core';
+import { ROLES_KEY, IS_PUBLIC_KEY } from '../constants';
+import { Role } from '../constants';
+import { Request } from 'express';
+import { Observable } from 'rxjs';
 
 @Injectable()
-export class AtGuard extends AuthGuard("jwt-at") implements CanActivate {
+export class AtGuard extends AuthGuard('jwt-at') implements CanActivate {
   constructor(private reflector: Reflector) {
     super();
   }
@@ -40,7 +40,7 @@ export class AtGuard extends AuthGuard("jwt-at") implements CanActivate {
     // 4. If roles are required, verify user role after auth succeeds
     // super.canActivate can return boolean or Promise or Observable,
     // so we need to handle all cases.
-    if (typeof canActivateResult === "boolean") {
+    if (typeof canActivateResult === 'boolean') {
       if (!canActivateResult) return false;
       return this.checkUserRole(context, requiredRoles);
     } else if (canActivateResult instanceof Promise) {

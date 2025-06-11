@@ -14,6 +14,6 @@ export class GuestUser {
   @Column({ nullable: true })
   phone?: string;
 
-  @OneToMany(() => Inquiry, inquiry => inquiry.guestUser)
+  @OneToMany(() => Inquiry, (inquiry) => inquiry.guestUser)
   inquiries: Inquiry[];
 }

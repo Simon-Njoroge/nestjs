@@ -25,10 +25,10 @@ import { EmailModule } from 'src/common/utils/email/email.module';
     }),
 
     ConfigModule,
-    EmailModule
+    EmailModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService,AtStrategy],
+  providers: [AuthService, AtStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

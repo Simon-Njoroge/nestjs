@@ -10,8 +10,17 @@ import {
 } from '@nestjs/common';
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
-import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { Booking } from './entities/booking.entity';
+import { Claims } from 'src/common/decorators/claims.decorator';
+import { ClaimsGuard } from 'src/common/guards/claims.guard';
+import { AtGuard } from 'src/common/guards/at.guard';
+import { UseGuards } from '@nestjs/common';
 
 @ApiTags('Bookings')
 @ApiBearerAuth()
@@ -26,12 +35,16 @@ export class BookingsController {
     return this.bookingService.create(dto);
   }
 
+  @UseGuards(AtGuard, ClaimsGuard)
+  @Claims('admin', 'get:bookings')
   @Get()
   @ApiOperation({ summary: 'Retrieve all bookings' })
   async findAll(): Promise<Booking[]> {
     return this.bookingService.findAll();
   }
 
+  @UseGuards(AtGuard, ClaimsGuard)
+  @Claims('admin', 'get:bookings')
   @Get(':id')
   @ApiOperation({ summary: 'Get a booking by ID' })
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Booking> {

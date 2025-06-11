@@ -10,7 +10,7 @@ export class EmailService {
     this.transporter = nodemailer.createTransport({
       host: this.configService.get<string>('SMTP_HOST'),
       port: this.configService.get<number>('SMTP_PORT'),
-      secure: false, 
+      secure: false,
       auth: {
         user: this.configService.get<string>('SMTP_USERNAME'),
         pass: this.configService.get<string>('SMTP_PASSWORD'),
@@ -26,7 +26,11 @@ export class EmailService {
     });
   }
 
-  async sendEmail(to: string, subject: string, htmlContent: string): Promise<void> {
+  async sendEmail(
+    to: string,
+    subject: string,
+    htmlContent: string,
+  ): Promise<void> {
     const fromName = this.configService.get<string>('EMAIL_FROM');
     const fromAddress = this.configService.get<string>('SMTP_FROM_NAME');
 
@@ -52,6 +56,19 @@ export class EmailService {
     await this.sendEmail(email, 'Welcome to Our Platform', html);
   }
 
+   async sendAccountCreationEmail(email: string, password: string): Promise<void> {
+    const appUrl = this.configService.get<string>('APP_URL');
+
+    const html = `
+      <h2>Welcome to Our Platform</h2>
+      <p>Email: ${email}</p>
+      <p>Password: ${password}</p>
+      <p><a href="${appUrl}/login">Login here</a></p>
+    `;
+
+    await this.sendEmail(email, "Your New Account", html);
+  }
+
   async sendPasswordResetEmail(email: string, token: string): Promise<void> {
     const appUrl = this.configService.get<string>('APP_URL');
     const resetUrl = `${appUrl}/reset-password?token=${token}`;
@@ -60,8 +77,11 @@ export class EmailService {
       <h2>Password Reset Request</h2>
       <p>You requested a password reset.</p>
       <p>Click <a href="${resetUrl}">here</a> to reset your password.</p>
+      <p>reset token: <strong>${token}</strong></p>
       <p>If you did not request this, please ignore this email.</p>
     `;
+
+    
 
     await this.sendEmail(email, 'Password Reset Request', html);
   }

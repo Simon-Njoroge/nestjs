@@ -1,58 +1,67 @@
 @url = http://localhost:8000
 
-@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwMDEsImVtYWlsIjoidXNlckBleGFtcGxlLmNvbSIsImlhdCI6MTc0OTU2MzcwMiwiZXhwIjoxNzQ5NTY0NjAyfQ.sRtrXBM3lZd0Hyh1mhynCXYn4vc7DwQs2mk_-rTNV0A
-@refresh_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwMDIsImVtYWlsIjoidXNlcjEwMDFAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDk0NTkxMjQsImV4cCI6MTc1MDA2MzkyNH0.G82dgORK7HQGI4sL8zt7_5DTRuS_vX7YXBT8-8RZvv8
-
+@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwMDYsImVtYWlsIjoiYWRtaW5AdG91ci5hYy5rZSIsImNsYWltcyI6WyJhZG1pbiIsImdldDp1c2VyIiwiYWRkOnVzZXIiLCJhZGQ6dG91cnBhY2thZ2UiLCJnZXQ6dG91cnBhY2thZ2UiLCJ1cGRhdGU6dG91cnBhY2thZ2UiLCJkZWxldGU6b3VycGFja2FnZSIsImdldDp0aWNrZXRzIiwiZ2V0OnBheW1lbnRzIiwiZ2V0OmlucXVpcmllcyIsImdldDpib29raW5ncyIsImdldDpndWVzdHVzZXJzIl0sImlhdCI6MTc0OTYyNTkxNCwiZXhwIjoxNzQ5NjI2ODE0fQ.Uq4F9IyFreMhuJG149kOwQNqb5JDFvZk26-SvxJsQsg
+@refresh_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwMDYsImVtYWlsIjoiYWRtaW5AdG91ci5hYy5rZSIsImNsYWltcyI6WyJhZG1pbiIsImdldDp1c2VyIiwiYWRkOnVzZXIiLCJhZGQ6dG91cnBhY2thZ2UiLCJnZXQ6dG91cnBhY2thZ2UiLCJ1cGRhdGU6dG91cnBhY2thZ2UiLCJkZWxldGU6b3VycGFja2FnZSIsImdldDp0aWNrZXRzIiwiZ2V0OnBheW1lbnRzIiwiZ2V0OmlucXVpcmllcyIsImdldDpib29raW5ncyIsImdldDpndWVzdHVzZXJzIl0sImlhdCI6MTc0OTYyNTkxNCwiZXhwIjoxNzUwMjMwNzE0fQ.tbJ331Pm1taRhTMOoa2itIDsMjRrrdOnAGPLw0tvsxs
 
 ### Seed the database with initial data
 ###
 POST {{url}}/seed
 
+### users Routes ###
 ### Get all users
 ### 
 GET {{url}}/users
 Authorization:  Bearer {{access_token}}
 
+### Get user by id
+GET {{url}}/users/1005
+Authorization:  Bearer {{access_token}}
+
+
 ### users
 ### create a new user
 ###
 POST {{url}}/users
+Authorization:  Bearer {{access_token}}
 Content-Type: application/json
 
 {
-  "email": "mukirisimon22@gmail.com",
-  "password": "securePass123",
-  "firstName": "simon",
-  "lastName": "njoroge",
+  "email": "mukiri.16030@students.kyu.ac.ke",
+  "fullName": "simon njoroge",
   "role": "user",
-  "phoneNumber": "+254717322552",
-  "profilePicture": "https://example.com/images/profile.jpg"
+  "phone": "+254717322552",
+  "profilePicture": "https://example.com/images/profile.jpg",
+  "claims":["user","get:user","add:tourpackage","get:tourpackage","update:tourpackage","delete:ourpackage","get:tickets","get:payments","get:inquiries","get:bookings","get:guestusers"]
 }
+
 
 ### Get a user by ID
 ###
-GET {{url}}/users/1
+GET {{url}}/users/10002
 Authorization:  Bearer {{access_token}}
 
 ### Update a user by ID
 ###
-PUT {{url}}/users/1
+PUT {{url}}/users/1002
+Authorization:  Bearer {{access_token}}
 Content-Type:  application/json
 
 {
-  "email": "user@example.com",
-  "password": "securePass123",
-  "firstName": "John",
-  "lastName": "Doe",
+  "email": "mukiri.16030@students.kyu.ac.ke",
+  "firstName": "simon",
+  "lastName": "Njoroge",
   "role": "user",
-  "phoneNumber": "+1234567890",
-  "profilePicture": "https://example.com/images/profile.jpg"
+  "phoneNumber": "+254717322552",
+  "profilePicture": "https://example.com/images/profile.jpg",
+  "claims":["user","get:user","add:tourpackage","get:tourpackage","update:tourpackage","delete:ourpackage","get:tickets","get:payments","get:inquiries","get:bookings","get:guestusers"]
 }
+
 
 
 ### Delete a user by ID
 ###
 DELETE {{url}}/users/1001
+Authorization:  Bearer {{access_token}}
 
 ### login
 
@@ -62,7 +71,7 @@ POST {{url}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "user@example.com",
+  "email": "admin@tour.ac.ke",
   "password": "securePass123"
 }
 
@@ -80,6 +89,7 @@ POST {{url}}/auth/refresh-token
 ### forgot-password
 ###
 POST {{url}}/auth/forgot-password
+Authorization:  Bearer {{access_token}}
 Content-Type: application/json
 
 {
@@ -92,162 +102,259 @@ POST {{url}}/auth/reset-password
 Content-Type: application/json
 
 {
-  "token":"",
-  "newPassword": "newSecurePass123"
+  "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwMDIsImVtYWlsIjoibXVraXJpc2ltb24yMkBnbWFpbC5jb20iLCJpYXQiOjE3NDk2MjI1NjcsImV4cCI6MTc0OTYyMzQ2N30.Mh83elFY_PAb20iaCK1h0ARSa8hwGKcb7nyjPKBUfcU",
+  "newPassword": "newSecurePass12"
 }
 
 
-### tour-package
-### Create a new tour package
-###
+### tour-package routes ###
+### get all 
+GET {{url}}/tour-packages
+Authorization:  Bearer {{access_token}}
+
+### get by Id
+GET {{url}}/tour-packages/1
+Authorization:  Bearer {{access_token}}
+
+### post
 POST {{url}}/tour-packages
 Authorization:  Bearer {{access_token}}
 Content-Type: application/json
 
-{
-  "title": "Amazing Tour",
-  "description": "Explore the wonders of the world with our amazing tour package.",
-  "price": 299.99,
-  "startDate": "2023-10-01",
-  "endDate": "2023-10-06",
-  "location": "Paris, France",
-  "coverImage": "https://example.com/images/tour.jpg",
-  "itinerary": "hi"
-}
+ {
+    "title": "Mount Kenya Hiking Tour",
+    "description": "Trek Africa’s second highest peak over a 5-day mountain adventure.",
+    "location": "Mount Kenya, Kenya",
+    "price": 950,
+    "durationDays": 5,
+    "imageUrl": "https://example.com/images/mt-kenya.jpg"
+  }
 
-### Get all tour packages
-###
-GET {{url}}/tour-packages
-Authorization:  Bearer {{access_token}}
 
-### Get a tour package by ID
-###
-GET {{url}}/tour-packages/1
-Authorization:  Bearer {{access_token}}
-### Update a tour package by ID
-###
+### update tour package
 PUT {{url}}/tour-packages/1
+Authorization:  Bearer {{access_token}}
 Content-Type: application/json
 
 {
-  "title": "Amazing Tour Updated",
-  "description": "Explore the wonders of the world with our amazing tour package, now updated.",
-  "price": 249.99,
-  "duration": "6 days",
-  "imageUrl": "https://example.com/images/tour-updated.jpg",
-  "availableSeats": 15
+  "title":"",
+  "description":"",
+  "location":"",
+  "price":"",
+  "durationDays":"",
+  "imageUrl":""
 }
-### Delete a tour package by ID
-###
+
+### delete tour package
 DELETE {{url}}/tour-packages/1
 Authorization:  Bearer {{access_token}}
-### Booking
-### Create a new booking
-###
-POST {{url}}/bookings
-Content-Type: application/json
-Authorization: Bearer {{access_token}}
 
-{
-  "userId": 1,
-  "tourPackageId": 1,
-  "bookingDate": "2023-10-01",
-  "numberOfSeats": 2
-}
 
-### Get all bookings
-###
-GET {{url}}/bookings
-Authorization:  Bearer {{access_token}}
-### Get a booking by ID
-###
-GET {{url}}/bookings/1
-Authorization:  Bearer {{access_token}}
-### Update a booking by ID
-###
-PUT {{url}}/bookings/1
-Content-Type: application/json
-
-{
-  "userId": 1,
-  "tourPackageId": 1,
-  "bookingDate": "2023-10-02",
-  "numberOfSeats": 3
-}
-
-### Delete a booking by ID
-###
-DELETE {{url}}/bookings/1
-
-### tickets
-### Create a new ticket
-###
-POST {{url}}/tickets
-Content-Type: application/json
-
-{
-  "userId": 1,
-  "tourPackageId": 1,
-  "bookingId": 1,
-  "ticketDate": "2023-10-01",
-  "seatNumber": "A1"
-}
-### Get all tickets
-###
+### ticket routes ###
+### get all tickets
 GET {{url}}/tickets
 Authorization:  Bearer {{access_token}}
 
-### Get a ticket by ID
-###
+### get by id
 GET {{url}}/tickets/1
 Authorization:  Bearer {{access_token}}
-### Update a ticket by ID
-###
+
+### post tickets
+POST {{url}}/tickets
+Authorization:  Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "tourPackageId":"",
+  "bookingId":"",
+  "travelerName":"",
+  "travelerEmail":"",
+  "travelerPhone":""
+}
+
+### update tickets
 PUT {{url}}/tickets/1
+Authorization:  Bearer {{access_token}}
 Content-Type: application/json
 
 {
-  "userId": 1,
-  "tourPackageId": 1,
-  "bookingId": 1,
-  "ticketDate": "2023-10-02",
-  "seatNumber": "A2"
+  "tourPackageId":"",
+  "bookingId":"",
+  "travelerName":"",
+  "travelerEmail":"",
+  "travelerPhone":""
 }
 
-### Delete a ticket by ID
-###
+### Delete Packets
 DELETE {{url}}/tickets/1
+Authorization:  Bearer {{access_token}}
 
-### inquiries
-### Create a new inquiry
-###
-POST {{url}}/inquiries
+### review routes ###
+### get all riviews
+GET {{url}}/reviews
+Authorization:  Bearer {{access_token}}
+
+### get review by id
+GET {{url}}/reviews/1
+Authorization:  Bearer {{access_token}}
+
+### post review
+POST {{url}}/reviews
+Authorization:  Bearer {{access_token}}
 Content-Type: application/json
 
 {
-  "userId": 1,
-  "subject": "Inquiry about tour packages",
-  "message": "I would like to know more about the available tour packages."
+  "userId":"",
+  "tourPackageId":"",
+  "rating":"",
+  "comment":""
 }
 
-### Get all inquiries
-###
+### update review
+PUT {{url}}/reviews/1
+Authorization:  Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "userId":"",
+  "tourPackageId":"",
+  "rating":"",
+  "comment":""
+}
+
+### delete review
+DELETE {{url}}/reviews/1
+Authorization:  Bearer {{access_token}}
+
+
+### payment routes ###
+### get all payments
+GET {{url}}/payments
+Authorization:  Bearer {{access_token}}
+
+### get payment by id
+GET {{url}}/payments/1
+Authorization:  Bearer {{access_token}}
+
+### stk push
+POST {{url}}/payments/stk-push
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "bookingId":2,
+  "amount":850,
+  "phone":"0717322552",
+  "method":"mpesa",
+}
+
+### post payment
+POST {{url}}/payments
+Authorization:  Bearer {{access_token}}
+Content-Type: application/json
+
+
+### UPDATE PAYMENT
+PUT {{url}}/payments/1
+Authorization:  Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "bookingId":"",
+  "transactionId":"",
+  "amount":"",
+  "paidAt":"",
+  "method":"",
+  "status":""
+}
+
+### delete payment 
+DELETE {{url}}/payments
+Authorization:  Bearer {{access_token}}
+
+
+### inquiries routes ###
+### get all inquiries
 GET {{url}}/inquiries
 Authorization:  Bearer {{access_token}}
-### Get an inquiry by ID
-###
+
+### get by id
 GET {{url}}/inquiries/1
 Authorization:  Bearer {{access_token}}
-### Update an inquiry by ID
-###
-PUT {{url}}/inquiries/1
+
+### post inquiry
+POST {{url}}/inquiries
+Authorization:  Bearer {{access_token}}
 Content-Type: application/json
 
 {
-  "userId": 1,
-  "subject": "Updated Inquiry about tour packages",
-  "message": "I would like"
+  "tourPackageId":"",
+  "userId":"",
+  "message":"",
+  "submittedAt":""
 }
+
+### update inquiries
+PUT {{url}}/inquiries/1
+Authorization:  Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "tourPackageId":"",
+  "userId":"",
+  "message":"",
+  "submittedAt":""
+}
+
+### delete inquiry
+DELETE {{url}}/inquiries/1
+Authorization:  Bearer {{access_token}}
+
+
+
+### booking routes ###
+### get all booking
+GET {{url}}/bookings
+Authorization:  Bearer {{access_token}}
+
+### get booking by id
+GET {{url}}/bookings/1
+Authorization:  Bearer {{access_token}}
+
+### post booking 
+POST {{url}}/bookings
+Authorization:  Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "userId":1005,
+  "tourPackageId":4,
+  "bookingDate":"2025-06-11T12:00:00Z",
+  "numberOfPeople":6,
+  "status":"pending",
+  "notes":"N/A"
+}
+
+### update booking
+PUT {{url}}/bookings/1
+Authorization:  Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "userId":1005,
+  "tourPackageId":4,
+  "bookingDate":"2025-06-11T12:00:00Z",
+  "numberOfPeople":6,
+  "status":"pending",
+  "notes":"N/A"
+}
+
+### delete booking
+DELETE {{url}}/bookings/1
+Authorization:  Bearer {{access_token}}
+
+
+
 
 
 

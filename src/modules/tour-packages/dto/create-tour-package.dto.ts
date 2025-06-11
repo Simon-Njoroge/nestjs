@@ -19,12 +19,18 @@ export class CreateTourPackageDto {
   @IsPositive()
   price: number;
 
-  @ApiProperty({ description: 'Duration in days of the tour package', example: 5 })
+  @ApiProperty({
+    description: 'Duration in days of the tour package',
+    example: 5,
+  })
   @IsNumber()
   @IsPositive()
   durationDays: number;
 
-  @ApiProperty({ description: 'Optional image URL for the tour package', required: false })
+  @ApiProperty({
+    description: 'Optional image URL for the tour package',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   imageUrl?: string;

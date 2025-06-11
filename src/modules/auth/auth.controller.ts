@@ -55,13 +55,13 @@ export class AuthController {
     Logger.info('logged out successfully');
     return this.authService.logout(id);
   }
-  
+
   @Public()
   @Post('forgot-password')
   forgotPassword(@Body('email') email: string) {
     return this.authService.forgotPassword(email);
   }
-  
+
   @Public()
   @Post('reset-password')
   resetPassword(

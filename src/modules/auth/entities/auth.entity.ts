@@ -8,7 +8,7 @@ import {
   BeforeInsert,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-// const uuidv4 = require('uuid').v4; 
+// const uuidv4 = require('uuid').v4;
 
 @Entity()
 export class Auth {

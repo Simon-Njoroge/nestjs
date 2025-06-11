@@ -6,7 +6,7 @@ import {
   Patch,
   Param,
   Delete,
-  Query
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -18,6 +18,9 @@ import { ApiTags } from '@nestjs/swagger';
 import { Role } from 'src/common/constants';
 import { AtGuard } from 'src/common/guards/at.guard';
 import { Public } from 'src/common/decorators/public.decorator';
+import { ClaimsGuard } from 'src/common/guards/claims.guard';
+import { RequiredClaims } from 'src/common/guards/claims.guard';
+import { Claims } from 'src/common/decorators/claims.decorator';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -27,17 +30,20 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @Get()
+  @UseGuards(AtGuard, ClaimsGuard)
+  @Claims('user', 'get:users')
   findAll(@Query('page') page = 1, @Query('limit') limit = 1000) {
     return this.usersService.findAll(Number(page), Number(limit));
   }
- @UseGuards(AtGuard, RolesGuard)
- @Roles(Role.USER)
+
+  @UseGuards(AtGuard, ClaimsGuard)
+  @Claims('user', 'get:user')
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
-  
+
   @Public()
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {

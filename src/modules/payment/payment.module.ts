@@ -8,7 +8,11 @@ import { DatabaseModule } from 'src/config/database.module';
 import { MpesaModule } from 'src/common/utils/payment/mpesa.module';
 
 @Module({
-  imports: [DatabaseModule, TypeOrmModule.forFeature([Payment, Booking]),MpesaModule],
+  imports: [
+    DatabaseModule,
+    TypeOrmModule.forFeature([Payment, Booking]),
+    MpesaModule,
+  ],
   controllers: [PaymentController],
   providers: [PaymentService],
 })

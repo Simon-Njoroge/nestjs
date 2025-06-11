@@ -21,7 +21,6 @@ export class CustomThrottlerGuard extends ThrottlerGuard {
   }
 
   protected getTracker(req: Record<string, any>): string {
-    // Use user ID if available, otherwise fallback to IP
     return req.user?.id?.toString() || req.ip;
   }
 }

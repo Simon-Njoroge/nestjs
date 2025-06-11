@@ -14,16 +14,12 @@ import {
   HttpCode,
   HttpStatus,
   HttpException,
-  Req
+  Req,
 } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 // import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Payment } from './entities/payment.entity';
 import { Claims } from 'src/common/decorators/claims.decorator';
@@ -36,8 +32,9 @@ import { Logger } from 'src/common/utils/logger';
 // @UseGuards(JwtAuthGuard)
 @Controller('payments')
 export class PaymentController {
-  constructor(private readonly paymentService: PaymentService,
-              // private readonly logger: Logger = new Logger(PaymentController.name)
+  constructor(
+    private readonly paymentService: PaymentService,
+    // private readonly logger: Logger = new Logger(PaymentController.name)
   ) {}
 
   @Public()

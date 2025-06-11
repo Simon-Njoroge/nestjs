@@ -56,7 +56,10 @@ export class EmailService {
     await this.sendEmail(email, 'Welcome to Our Platform', html);
   }
 
-   async sendAccountCreationEmail(email: string, password: string): Promise<void> {
+  async sendAccountCreationEmail(
+    email: string,
+    password: string,
+  ): Promise<void> {
     const appUrl = this.configService.get<string>('APP_URL');
 
     const html = `
@@ -64,9 +67,11 @@ export class EmailService {
       <p>Email: ${email}</p>
       <p>Password: ${password}</p>
       <p><a href="${appUrl}/login">Login here</a></p>
+      <p>Please change your password after logging in for the first time.</p>
+      <p>If you did not create this account, please ignore this email.</p>
     `;
 
-    await this.sendEmail(email, "Your New Account", html);
+    await this.sendEmail(email, 'Your New Account', html);
   }
 
   async sendPasswordResetEmail(email: string, token: string): Promise<void> {
@@ -80,8 +85,6 @@ export class EmailService {
       <p>reset token: <strong>${token}</strong></p>
       <p>If you did not request this, please ignore this email.</p>
     `;
-
-    
 
     await this.sendEmail(email, 'Password Reset Request', html);
   }

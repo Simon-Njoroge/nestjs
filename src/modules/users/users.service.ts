@@ -10,14 +10,17 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { Logger } from 'src/common/utils/logger';
-import { generatePassword } from 'src/common/utils/generatepassword';
+// import { generatePassword } from 'src/common/utils/generatepassword';
 import { EmailService } from 'src/common/utils/email/email.service';
+import { PasswordGenerator } from 'src/common/utils/generatepassword';
+
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly emailService: EmailService,
+    private readonly passwordGenerator: PasswordGenerator, // Assuming PasswordGenerator is a service that generates passwords
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -30,8 +33,8 @@ export class UsersService {
         `User with email ${createUserDto.email} already exists`,
       );
     }
-    const password = generatePassword(12);
-    console.log(password)
+    const password = await this.passwordGenerator.generate(12); 
+    console.log(password);
     const hashedPassword = await bcrypt.hash(password, 10);
     if (!hashedPassword) {
       throw new BadRequestException('Error hashing password');
@@ -39,17 +42,14 @@ export class UsersService {
     Logger.info(`Creating user with email: ${createUserDto.email}`);
     Logger.debug(`Hashed password: ${hashedPassword}`);
     Logger.debug(`User data: ${JSON.stringify(createUserDto)}`);
-    const newUser = this.userRepository.create({
-      ...createUserDto,
-      password: hashedPassword,
-    });
+    createUserDto.password= hashedPassword;
+    const newUser = this.userRepository.create(createUserDto);
 
     try {
       const savedUser = await this.userRepository.save(newUser);
-      
-      await this.emailService.sendWelcomeEmail(savedUser.email,password)
-       
-      
+
+      await this.emailService.sendWelcomeEmail(savedUser.email, password);
+
       Logger.info(`User with ID ${savedUser.id} created successfully`);
       return savedUser;
     } catch (error) {

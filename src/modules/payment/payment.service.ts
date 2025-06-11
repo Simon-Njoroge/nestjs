@@ -24,7 +24,8 @@ export class PaymentService {
   ) {}
 
   async create(createPaymentDto: CreatePaymentDto): Promise<Payment> {
-    const { bookingId, transactionId, amount,phone,method ,status,paidAt} = createPaymentDto;
+    const { bookingId, transactionId, amount, phone, method, status, paidAt } =
+      createPaymentDto;
     const booking = await this.bookingRepository.findOne({
       where: { id: createPaymentDto.bookingId },
     });
@@ -43,7 +44,8 @@ export class PaymentService {
 
       // Save payment record if MPESA was successful
       const payment = this.paymentRepository.create({
-        transactionId: stkResult?.queryResult?.MpesaReceiptNumber || transactionId,
+        transactionId:
+          stkResult?.queryResult?.MpesaReceiptNumber || transactionId,
         amount: stkResult?.queryResult?.Amount || amount,
         phone: createPaymentDto.phone,
         paidAt: new Date(paidAt || Date.now()),

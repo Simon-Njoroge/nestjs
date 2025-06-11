@@ -24,9 +24,12 @@ import { PaymentModule } from './modules/payment/payment.module';
 import * as redisStore from 'cache-manager-ioredis';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { CustomThrottlerGuard } from './common/guards/throttler.guard';
+import { ThrottlerBehindProxyGuard } from './common/guards/throttler-behind-proxy.guard';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
+    CommonModule,
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -76,6 +79,7 @@ import { CustomThrottlerGuard } from './common/guards/throttler.guard';
       useClass: RolesGuard,
     },
     { provide: APP_GUARD, useClass: CustomThrottlerGuard },
+    { provide: APP_GUARD, useClass: ThrottlerBehindProxyGuard },
   ],
 })
 export class AppModule implements NestModule {

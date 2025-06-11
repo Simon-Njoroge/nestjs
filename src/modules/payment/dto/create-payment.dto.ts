@@ -13,7 +13,10 @@ export class CreatePaymentDto {
   @ApiProperty({ example: 150.75, description: 'Amount paid' })
   amount: number;
 
-  @ApiProperty({ example: '254712345678', description: 'Phone number used for payment' })
+  @ApiProperty({
+    example: '254712345678',
+    description: 'Phone number used for payment',
+  })
   phone: string;
 
   @ApiProperty({

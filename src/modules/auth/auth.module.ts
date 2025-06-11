@@ -9,6 +9,7 @@ import { Auth } from './entities/auth.entity';
 import { DatabaseModule } from 'src/config/database.module';
 import { AtStrategy } from 'src/common/strategies/at.strategy';
 import { EmailModule } from 'src/common/utils/email/email.module';
+
 @Module({
   imports: [
     DatabaseModule,

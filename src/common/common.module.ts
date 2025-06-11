@@ -22,14 +22,6 @@ import { RolesGuard } from './guards/roles.guard';
       useClass: TransformInterceptor,
     },
     {
-      provide: APP_PIPE,
-      useClass: ValidationPipe,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
-    {
       provide: APP_GUARD,
       useClass: RolesGuard,
     },

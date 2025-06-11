@@ -26,7 +26,7 @@ Authorization:  Bearer {{access_token}}
 Content-Type: application/json
 
 {
-  "email": "mukiri.16030@students.kyu.ac.ke",
+  "email": "mukiri@students.kyu.ac.ke",
   "fullName": "simon njoroge",
   "role": "user",
   "phone": "+254717322552",

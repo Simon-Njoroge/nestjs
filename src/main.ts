@@ -13,9 +13,12 @@ import './polyfill';
 import { Logger } from './common/utils/logger';
 import helmet from 'helmet';
 import * as bodyParser from 'body-parser';
+
 // import { RolesGuard } from './common/guards/roles.guard';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  app.set('trust proxy', true);
 
   // Enable CORS
   app.enableCors({
@@ -62,6 +65,8 @@ async function bootstrap() {
   // Global filters
   app.useGlobalFilters(new HttpExceptionFilter());
 
+  //Global Guards
+
   // Serve static files
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
@@ -107,35 +112,62 @@ Each module (Bookings, Tours, Users, Payments, etc.) is tagged for easy navigati
       .addTag('tickets', 'Ticket management')
       .build();
 
-
     const document = SwaggerModule.createDocument(app, config);
-
     SwaggerModule.setup('api-docs', app, document, {
-      jsonDocumentUrl: '/api-docs-json',
       customSiteTitle: '🌐 Tourism API Docs',
       customfavIcon: 'https://cdn-icons-png.flaticon.com/512/1975/1975728.png',
       customCss: `
-      .swagger-ui .topbar-wrapper { display: none; }
-      .swagger-ui .info hgroup.main > h1, 
-      .swagger-ui .info hgroup.main > h2 { 
-        color: #003049; 
-        font-weight: bold; 
-      }
-      .swagger-ui .opblock.opblock-post .opblock-summary-method { background-color: #2a9d8f; }
-      .swagger-ui .opblock.opblock-get .opblock-summary-method { background-color: #0077b6; }
-      .swagger-ui .opblock.opblock-delete .opblock-summary-method { background-color: #d62828; }
-      .swagger-ui .opblock.opblock-put .opblock-summary-method { background-color: #f77f00; }
-      .swagger-ui .btn.execute { background-color: #264653; border-color: #264653; }
-      .swagger-ui .info { margin-bottom: 20px; border-left: 6px solid #003049; padding-left: 20px; background-color: #f1f1f1; border-radius: 8px; }
-    `,
-      customJs: `
-      window.onload = function() {
-        const welcome = document.createElement('div');
-        welcome.innerHTML = "<div style='padding:1rem;background:#003049;color:white;border-radius:10px;margin-bottom:1rem;text-align:center;font-size:18px;font-weight:bold;'>Welcome to the Tourism Management System API 🎉</div>";
-        const info = document.querySelector('.swagger-ui .info');
-        if (info && welcome) info.parentNode.insertBefore(welcome, info);
-      }
-    `,
+    .swagger-ui .topbar-wrapper { display: none; }
+    .swagger-ui .info hgroup.main > h1, 
+    .swagger-ui .info hgroup.main > h2 { 
+      color: #003049; 
+      font-weight: bold; 
+    }
+    .swagger-ui .opblock.opblock-post .opblock-summary-method { 
+      background-color: #2a9d8f; 
+    }
+    .swagger-ui .opblock.opblock-get .opblock-summary-method { 
+      background-color: #0077b6; 
+    }
+    .swagger-ui .opblock.opblock-delete .opblock-summary-method { 
+      background-color: #d62828; 
+    }
+    .swagger-ui .opblock.opblock-put .opblock-summary-method { 
+      background-color: #f77f00; 
+    }
+    .swagger-ui .btn.execute { 
+      background-color: #264653; 
+      border-color: #264653; 
+    }
+    .swagger-ui .info { 
+      margin-bottom: 20px; 
+      border-left: 6px solid #003049; 
+      padding-left: 20px; 
+      background-color: #f1f1f1; 
+      border-radius: 8px; 
+    }
+    /* Dark mode styles */
+    .dark-mode { 
+      background-color: #121212 !important; 
+      color: #e0e0e0 !important; 
+    }
+    .dark-mode .swagger-ui { 
+      background-color: #121212; 
+    }
+    .dark-mode .topbar, 
+    .dark-mode .info, 
+    .dark-mode .opblock-summary { 
+      background: #1e1e1e !important; 
+      color: #ffffff !important; 
+    }
+    .dark-mode .swagger-ui .scheme-container {
+      background: #1e1e1e !important;
+    }
+    .dark-mode .swagger-ui .opblock {
+      background: #2d2d2d !important;
+      border-color: #444 !important;
+    }
+  `,
     });
   }
 

@@ -1,4 +1,4 @@
-import axios from 'axios';
+const axios = require('axios');
 import { Logger } from '../logger';
 import * as dotenv from 'dotenv';
 import { Injectable } from '@nestjs/common';

@@ -8,6 +8,7 @@ import {
   Put,
   UseGuards,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { TourPackagesService } from './tour-packages.service';
 import { CreateTourPackageDto } from './dto/create-tour-package.dto';
@@ -52,8 +53,8 @@ export class TourPackagesController {
     description: 'List of tour packages',
     type: [TourPackage],
   })
-  findAll() {
-    return this.tourPackageService.findAll();
+  findAll(@Query('page') page = 1, @Query('limit') limit = 1000) {
+    return this.tourPackageService.findAll(Number(page), Number(limit));
   }
 
   @UseGuards(AtGuard, ClaimsGuard)

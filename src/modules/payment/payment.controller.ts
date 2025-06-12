@@ -15,6 +15,7 @@ import {
   HttpStatus,
   HttpException,
   Req,
+  Query,
 } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
@@ -61,18 +62,24 @@ export class PaymentController {
     return { ResultCode: 0, ResultDesc: 'Success' };
   }
 
+  @UseGuards(AtGuard, ClaimsGuard)
+  @Claims('admin', 'get:payments')
   @Get()
   @ApiOperation({ summary: 'Get all payments' })
-  findAll() {
-    return this.paymentService.findAll();
+  findAll(@Query('page') page = 1, @Query('limit') limit = 1000) {
+    return this.paymentService.findAll(Number(page), Number(limit));
   }
 
+  @UseGuards(AtGuard, ClaimsGuard)
+  @Claims('admin', 'get:payments')
   @Get(':id')
   @ApiOperation({ summary: 'Get payment by ID' })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.paymentService.findOne(id);
   }
 
+  @UseGuards(AtGuard, ClaimsGuard)
+  @Claims('admin', 'update:payment')
   @Patch(':id')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @ApiOperation({ summary: 'Update a payment' })
@@ -83,6 +90,8 @@ export class PaymentController {
     return this.paymentService.update(id, updatePaymentDto);
   }
 
+  @UseGuards(AtGuard, ClaimsGuard)
+  @Claims('admin', 'delete:payment')
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a payment' })
   remove(@Param('id', ParseIntPipe) id: number) {

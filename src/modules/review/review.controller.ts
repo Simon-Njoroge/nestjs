@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { CreateReviewDto } from './dto/create-review.dto';
@@ -42,8 +43,8 @@ export class ReviewController {
     description: 'List of all reviews',
     type: [Review],
   })
-  findAll() {
-    return this.reviewService.findAll();
+  findAll(@Query('page') page = 1, @Query('limit') limit = 1000) {
+    return this.reviewService.findAll(Number(page), Number(limit));
   }
 
   @Get(':id')

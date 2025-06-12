@@ -7,6 +7,7 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { InquiriesService } from './inquiries.service';
 import { CreateInquiryDto } from './dto/create-inquiry.dto';
@@ -27,6 +28,8 @@ import { UseGuards } from '@nestjs/common';
 export class InquiriesController {
   constructor(private readonly inquiryService: InquiriesService) {}
 
+  @UseGuards(AtGuard, ClaimsGuard)
+  @Claims('admin', 'create:inquiry')
   @Post()
   @ApiOperation({ summary: 'Submit an inquiry (by user or guest)' })
   @ApiResponse({
@@ -48,8 +51,8 @@ export class InquiriesController {
     description: 'List of all inquiries.',
     type: [Inquiry],
   })
-  findAll(): Promise<Inquiry[]> {
-    return this.inquiryService.findAll();
+  findAll(@Query('page') page = 1, @Query('limit') limit = 1000) {
+    return this.inquiryService.findAll(Number(page), Number(limit));
   }
 
   @UseGuards(AtGuard, ClaimsGuard)
@@ -63,6 +66,8 @@ export class InquiriesController {
     return this.inquiryService.findOne(+id);
   }
 
+  @UseGuards(AtGuard, ClaimsGuard)
+  @Claims('admin', 'delete:inquiry')
   @Delete(':id')
   @ApiBearerAuth()
   @HttpCode(HttpStatus.NO_CONTENT)

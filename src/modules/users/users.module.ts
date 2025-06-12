@@ -7,7 +7,12 @@ import { User } from './entities/user.entity';
 import { EmailModule } from 'src/common/utils/email/email.module';
 import { GeneratePasswordModule } from 'src/common/utils/generatepassword.module';
 @Module({
-  imports: [DatabaseModule, TypeOrmModule.forFeature([User]), EmailModule,GeneratePasswordModule],
+  imports: [
+    DatabaseModule,
+    TypeOrmModule.forFeature([User]),
+    EmailModule,
+    GeneratePasswordModule,
+  ],
   controllers: [UsersController],
   providers: [UsersService],
 })

@@ -8,12 +8,12 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import * as bcrypt from 'bcrypt';
 import { Logger } from 'src/common/utils/logger';
+import * as bcrypt from 'bcrypt'; 
 // import { generatePassword } from 'src/common/utils/generatepassword';
 import { EmailService } from 'src/common/utils/email/email.service';
 import { PasswordGenerator } from 'src/common/utils/generatepassword';
-
+import { PaginationResult, paginate } from 'src/common/pipes/pagination.util';
 
 @Injectable()
 export class UsersService {
@@ -33,7 +33,7 @@ export class UsersService {
         `User with email ${createUserDto.email} already exists`,
       );
     }
-    const password = await this.passwordGenerator.generate(12); 
+    const password = await this.passwordGenerator.generate(12);
     console.log(password);
     const hashedPassword = await bcrypt.hash(password, 10);
     if (!hashedPassword) {
@@ -42,13 +42,16 @@ export class UsersService {
     Logger.info(`Creating user with email: ${createUserDto.email}`);
     Logger.debug(`Hashed password: ${hashedPassword}`);
     Logger.debug(`User data: ${JSON.stringify(createUserDto)}`);
-    createUserDto.password= hashedPassword;
+    createUserDto.password = hashedPassword;
     const newUser = this.userRepository.create(createUserDto);
 
     try {
       const savedUser = await this.userRepository.save(newUser);
 
-      await this.emailService.sendWelcomeEmail(savedUser.email, password);
+      await this.emailService.sendAccountCreationEmail(
+        savedUser.email,
+        password,
+      );
 
       Logger.info(`User with ID ${savedUser.id} created successfully`);
       return savedUser;
@@ -58,27 +61,12 @@ export class UsersService {
     }
   }
 
-  async findAll(page = 1, limit = 1000) {
-    const take = Math.min(limit, 10000);
-    const skip = (page - 1) * take;
-
-    const [users, total] = await this.userRepository.findAndCount({
-      skip,
-      take,
-      order: { id: 'ASC' },
+  async findAll(page = 1, limit = 1000): Promise<PaginationResult<User>> {
+    const [data, total] = await this.userRepository.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
     });
-
-    return {
-      success: true,
-      data: users,
-      pagination: {
-        total,
-        page,
-        limit: take,
-        totalPages: Math.ceil(total / take),
-      },
-      timestamp: new Date().toISOString(),
-    };
+    return paginate(data, total, page, limit);
   }
 
   async findOne(id: number) {
@@ -97,9 +85,7 @@ export class UsersService {
 
     Logger.info(`User with ID ${id} fetched successfully`);
     return {
-      success: true,
       data: user,
-      timestamp: new Date().toISOString(),
     };
   }
 

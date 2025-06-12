@@ -23,7 +23,7 @@ async function bootstrap() {
   // Enable CORS
   app.enableCors({
     origin: [
-      'http://localhost:8000', // for development
+      'http://localhost:8000', 
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -64,6 +64,9 @@ async function bootstrap() {
 
   // Global filters
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  // Global interceptors
+  app.useGlobalInterceptors(new TransformInterceptor());
 
   //Global Guards
 

@@ -9,6 +9,7 @@ import { Booking } from './entities/booking.entity';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { User } from '../../modules/users/entities/user.entity';
 import { TourPackage } from '../../modules/tour-packages/entities/tour-package.entity';
+import { PaginationResult, paginate } from 'src/common/pipes/pagination.util';
 
 @Injectable()
 export class BookingsService {
@@ -45,11 +46,14 @@ export class BookingsService {
     return this.bookingRepo.save(booking);
   }
 
-  async findAll(): Promise<Booking[]> {
-    return this.bookingRepo.find({
+  async findAll(page = 1, limit = 1000): Promise<PaginationResult<Booking>> {
+    const [data, total] = await this.bookingRepo.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
       relations: ['user', 'tourPackage', 'tickets', 'payment'],
       order: { bookingDate: 'DESC' },
     });
+    return paginate(data, total, page, limit);
   }
 
   async findOne(id: number): Promise<Booking> {

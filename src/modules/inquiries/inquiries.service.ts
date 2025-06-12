@@ -6,6 +6,7 @@ import { CreateInquiryDto } from './dto/create-inquiry.dto';
 import { TourPackage } from '../tour-packages/entities/tour-package.entity';
 import { User } from '../users/entities/user.entity';
 import { GuestUser } from '../guest-users/entities/guest-user.entity';
+import { PaginationResult, paginate } from 'src/common/pipes/pagination.util';
 
 @Injectable()
 export class InquiriesService {
@@ -51,11 +52,14 @@ export class InquiriesService {
     return this.inquiryRepo.save(inquiry);
   }
 
-  async findAll(): Promise<Inquiry[]> {
-    return this.inquiryRepo.find({
+  async findAll(page = 1, limit = 1000): Promise<PaginationResult<Inquiry>> {
+    const [data, total] = await this.inquiryRepo.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
       relations: ['tourPackage', 'user', 'guestUser'],
       order: { submittedAt: 'DESC' },
     });
+    return paginate(data, total, page, limit);
   }
 
   async findOne(id: number): Promise<Inquiry> {

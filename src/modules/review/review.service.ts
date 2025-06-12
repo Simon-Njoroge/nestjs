@@ -6,7 +6,7 @@ import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { User } from '../users/entities/user.entity';
 import { TourPackage } from '../tour-packages/entities/tour-package.entity';
-
+import { PaginationResult, paginate } from 'src/common/pipes/pagination.util';
 @Injectable()
 export class ReviewService {
   constructor(
@@ -39,11 +39,14 @@ export class ReviewService {
     return this.reviewRepo.save(review);
   }
 
-  async findAll(): Promise<Review[]> {
-    return this.reviewRepo.find({
+  async findAll(page = 1, limit = 1000): Promise<PaginationResult<Review>> {
+    const [data, total] = await this.reviewRepo.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
       relations: ['user', 'tourPackage'],
       order: { createdAt: 'DESC' },
     });
+    return paginate(data, total, page, limit);
   }
 
   async findOne(id: number): Promise<Review> {

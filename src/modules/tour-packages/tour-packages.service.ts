@@ -8,6 +8,8 @@ import { Booking } from '../bookings/entities/booking.entity';
 import { Ticket } from '../tickets/entities/ticket.entity';
 import { Inquiry } from '../inquiries/entities/inquiry.entity';
 import { Review } from '../review/entities/review.entity';
+import { PasswordGenerator } from 'src/common/utils/generatepassword';
+import { PaginationResult, paginate } from 'src/common/pipes/pagination.util';
 
 @Injectable()
 export class TourPackagesService {
@@ -33,10 +35,16 @@ export class TourPackagesService {
     return this.tourPackageRepo.save(packageEntity);
   }
 
-  async findAll(): Promise<TourPackage[]> {
-    return this.tourPackageRepo.find({
+  async findAll(
+    page = 1,
+    limit = 1000,
+  ): Promise<PaginationResult<TourPackage>> {
+    const [data, total] = await this.tourPackageRepo.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
       relations: ['bookings', 'tickets', 'inquiries', 'reviews'],
     });
+    return paginate(data, total, page, limit);
   }
 
   async findOne(id: number): Promise<TourPackage> {

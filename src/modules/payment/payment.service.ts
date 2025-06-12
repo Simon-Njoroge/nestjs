@@ -10,8 +10,9 @@ import { Payment } from './entities/payment.entity';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { Booking } from '../bookings/entities/booking.entity';
-import { MpesaClient } from '../../common/utils/payment/mpesa-client'; // Adjust path if needed
-import { Logger } from '../../common/utils/logger'; // Adjust path if needed
+import { MpesaClient } from '../../common/utils/payment/mpesa-client';
+import { Logger } from '../../common/utils/logger';
+import { PaginationResult, paginate } from 'src/common/pipes/pagination.util';
 
 @Injectable()
 export class PaymentService {
@@ -66,8 +67,11 @@ export class PaymentService {
     }
   }
 
-  async findAll(): Promise<Payment[]> {
-    return this.paymentRepository.find({ relations: ['booking'] });
+  async findAll(page = 1, limit = 1000): Promise<PaginationResult<Payment>> {
+    const [data, total] = await this.paymentRepository.findAndCount({
+      relations: ['booking'],
+    });
+    return paginate(data, total, page, limit);
   }
 
   async findOne(id: number): Promise<Payment> {

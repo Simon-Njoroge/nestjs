@@ -8,6 +8,7 @@ import {
   Delete,
   ParseIntPipe,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
@@ -24,6 +25,7 @@ import { Claims } from 'src/common/decorators/claims.decorator';
 import { ClaimsGuard } from 'src/common/guards/claims.guard';
 import { AtGuard } from 'src/common/guards/at.guard';
 
+
 @ApiTags('tickets')
 @ApiBearerAuth()
 // @UseGuards(JwtAuthGuard)
@@ -31,6 +33,8 @@ import { AtGuard } from 'src/common/guards/at.guard';
 export class TicketsController {
   constructor(private readonly ticketService: TicketsService) {}
 
+  @UseGuards(AtGuard, ClaimsGuard)
+  @Claims('admin', 'create:ticket')
   @Post()
   @ApiOperation({ summary: 'Create a new ticket' })
   @ApiResponse({ status: 201, description: 'Ticket created', type: Ticket })
@@ -43,8 +47,8 @@ export class TicketsController {
   @Get()
   @ApiOperation({ summary: 'Get all tickets' })
   @ApiResponse({ status: 200, description: 'List of tickets', type: [Ticket] })
-  findAll(): Promise<Ticket[]> {
-    return this.ticketService.findAll();
+  findAll(@Query('page') page = 1, @Query('limit') limit = 1000) {
+    return this.ticketService.findAll(Number(page), Number(limit));
   }
 
   @UseGuards(AtGuard, ClaimsGuard)
@@ -56,6 +60,8 @@ export class TicketsController {
     return this.ticketService.findOne(id);
   }
 
+  @UseGuards(AtGuard, ClaimsGuard)
+  @Claims('admin', 'update:ticket')
   @Patch(':id')
   @ApiOperation({ summary: 'Update a ticket by ID' })
   @ApiResponse({ status: 200, description: 'Updated ticket', type: Ticket })
@@ -66,6 +72,8 @@ export class TicketsController {
     return this.ticketService.update(id, updateTicketDto);
   }
 
+  @UseGuards(AtGuard, ClaimsGuard)
+  @Claims('admin', 'delete:ticket')
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a ticket by ID' })
   @ApiResponse({ status: 200, description: 'Ticket deleted' })

@@ -26,6 +26,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { CustomThrottlerGuard } from './common/guards/throttler.guard';
 import { ThrottlerBehindProxyGuard } from './common/guards/throttler-behind-proxy.guard';
 import { CommonModule } from './common/common.module';
+import { SeedModule } from './modules/seed/seed.module';
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { CommonModule } from './common/common.module';
     CaslModule,
     ReviewModule,
     PaymentModule,
+    SeedModule,
   ],
   providers: [
     {

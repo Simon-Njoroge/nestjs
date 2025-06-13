@@ -14,14 +14,30 @@ import * as bcrypt from 'bcrypt';
 import { EmailService } from 'src/common/utils/email/email.service';
 import { PasswordGenerator } from 'src/common/utils/generatepassword';
 import { PaginationResult, paginate } from 'src/common/pipes/pagination.util';
+import {Role} from '../../common/constants'
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly emailService: EmailService,
-    private readonly passwordGenerator: PasswordGenerator, // Assuming PasswordGenerator is a service that generates passwords
-  ) {}
+    private readonly passwordGenerator: PasswordGenerator,
+  ) {
+    // remove password while returning user data
+    this.userRepository.metadata.columns
+      .filter((column) => column.propertyName === 'password')
+      .forEach((column) => {
+        column.isSelect = false;
+      });
+    Logger.info('UsersService initialized');
+
+    //remove refresh token while returning user data
+    this.userRepository.metadata.columns
+      .filter((column) => column.propertyName === 'refreshToken')
+      .forEach((column) => {
+        column.isSelect = false;
+      });
+  }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const existingUser = await this.userRepository.findOne({
@@ -88,6 +104,18 @@ export class UsersService {
       data: user,
     };
   }
+
+  // user.service.ts
+async banUserByEmail(email: string): Promise<void> {
+  const user = await this.userRepository.findOne({ where: { email } });
+  if (!user) return;
+
+  user.role =  Role.BANNED; 
+  await this.userRepository.save(user);
+
+  await this.emailService.sendBannedAccountNotification(email);
+}
+
 
   async update(
     id: number,

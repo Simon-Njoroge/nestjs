@@ -15,5 +15,6 @@ import { GeneratePasswordModule } from 'src/common/utils/generatepassword.module
   ],
   controllers: [UsersController],
   providers: [UsersService],
+  exports: [UsersService],
 })
 export class UsersModule {}

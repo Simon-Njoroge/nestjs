@@ -1,7 +1,7 @@
 @url = http://localhost:8000
 
-@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwMDA0MDEsImVtYWlsIjoibXVraXJpLjE2MDMwQHN0dWRlbnRzLmt5dS5hYy5rZSIsImNsYWltcyI6WyJ1c2VyIiwiZ2V0OnVzZXIiLCJjcmVhdGU6dXNlciIsInVwZGF0ZTp1c2VyIiwiZGVsZXRlOnVzZXIiLCJhZGQ6dG91cnBhY2thZ2UiLCJnZXQ6dG91cnBhY2thZ2UiLCJ1cGRhdGU6dG91cnBhY2thZ2UiLCJkZWxldGU6dG91cnBhY2thZ2UiLCJjcmVhdGU6dG91cnBhY2thZ2UiLCJnZXQ6dG91cnBhY2thZ2VzIiwiZGVsZXRlOnRvdXJwYWNrYWdlcyIsImdldDp0aWNrZXRzIiwiY3JlYXRlOnRpY2tldCIsInVwZGF0ZTp0aWNrZXQiLCJkZWxldGU6dGlja2V0IiwiZ2V0OnBheW1lbnRzIiwiY3JlYXRlOnBheW1lbnQiLCJ1cGRhdGU6cGF5bWVudCIsImRlbGV0ZTpwYXltZW50IiwiZ2V0OmlucXVpcmllcyIsImNyZWF0ZTppbnF1aXJ5IiwidXBkYXRlOmlucXVpcnkiLCJkZWxldGU6aW5xdWlyeSIsImdldDpib29raW5ncyIsImNyZWF0ZTpib29raW5nIiwidXBkYXRlOmJvb2tpbmciLCJkZWxldGU6Ym9va2luZyIsImdldDpndWVzdHVzZXJzIiwiY3JlYXRlOmd1ZXN0dXNlciIsInVwZGF0ZTpndWVzdHVzZXIiLCJkZWxldGU6Z3Vlc3R1c2VyIl0sImlhdCI6MTc0OTcyMDUzOCwiZXhwIjoxNzQ5NzIxNDM4fQ.KlczdLS4tYmopdGzFU75e2K_Dn5LxaQEzZ730YZ6ZzA
-@refresh_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwMDA0MDEsImVtYWlsIjoibXVraXJpLjE2MDMwQHN0dWRlbnRzLmt5dS5hYy5rZSIsImNsYWltcyI6WyJ1c2VyIiwiZ2V0OnVzZXIiLCJjcmVhdGU6dXNlciIsInVwZGF0ZTp1c2VyIiwiZGVsZXRlOnVzZXIiLCJhZGQ6dG91cnBhY2thZ2UiLCJnZXQ6dG91cnBhY2thZ2UiLCJ1cGRhdGU6dG91cnBhY2thZ2UiLCJkZWxldGU6dG91cnBhY2thZ2UiLCJjcmVhdGU6dG91cnBhY2thZ2UiLCJnZXQ6dG91cnBhY2thZ2VzIiwiZGVsZXRlOnRvdXJwYWNrYWdlcyIsImdldDp0aWNrZXRzIiwiY3JlYXRlOnRpY2tldCIsInVwZGF0ZTp0aWNrZXQiLCJkZWxldGU6dGlja2V0IiwiZ2V0OnBheW1lbnRzIiwiY3JlYXRlOnBheW1lbnQiLCJ1cGRhdGU6cGF5bWVudCIsImRlbGV0ZTpwYXltZW50IiwiZ2V0OmlucXVpcmllcyIsImNyZWF0ZTppbnF1aXJ5IiwidXBkYXRlOmlucXVpcnkiLCJkZWxldGU6aW5xdWlyeSIsImdldDpib29raW5ncyIsImNyZWF0ZTpib29raW5nIiwidXBkYXRlOmJvb2tpbmciLCJkZWxldGU6Ym9va2luZyIsImdldDpndWVzdHVzZXJzIiwiY3JlYXRlOmd1ZXN0dXNlciIsInVwZGF0ZTpndWVzdHVzZXIiLCJkZWxldGU6Z3Vlc3R1c2VyIl0sImlhdCI6MTc0OTcyMDUzOCwiZXhwIjoxNzUwMzI1MzM4fQ.3rZm-aXULYzvnAegYpQYimW_x2_Tzdk9XCcYCukahtU
+@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoibXVraXJpLjE2MDMwQHN0dWRlbnRzLmt5dS5hYy5rZSIsImNsYWltcyI6WyJ1c2VyIiwiZ2V0OnVzZXIiLCJjcmVhdGU6dXNlciIsInVwZGF0ZTp1c2VyIiwiZGVsZXRlOnVzZXIiLCJhZGQ6dG91cnBhY2thZ2UiLCJnZXQ6dG91cnBhY2thZ2UiXSwiaWF0IjoxNzQ5ODEyNjQ1LCJleHAiOjE3NDk4MTM1NDV9.ZnRLqPd6j7X9dhrFggypXtNy7XrBl-mXeZ6iHr4DOCY
+@refresh_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoibXVraXJpc2ltb24yMkBnbWFpbC5jb20iLCJjbGFpbXMiOlsidXNlciIsImdldDp1c2VyIiwiY3JlYXRlOnVzZXIiLCJ1cGRhdGU6dXNlciIsImRlbGV0ZTp1c2VyIiwiYWRkOnRvdXJwYWNrYWdlIiwiZ2V0OnRvdXJwYWNrYWdlIl0sImlhdCI6MTc0OTgxMDM1MywiZXhwIjoxNzUwNDE1MTUzfQ.M4BRXWroJVde6p-lBMXAsCPfO08byuwjWqNnH2O2mKE
 
 ### Seed the database with initial data
 ###
@@ -10,7 +10,7 @@ POST {{url}}/seed
 ### users Routes ###
 ### Get all users
 ### 
-GET {{url}}/users?page=1$
+GET {{url}}/users
 Authorization:  Bearer {{access_token}}
 
 ### Get user by id
@@ -26,11 +26,19 @@ Authorization:  Bearer {{access_token}}
 Content-Type: application/json
 
 {
-  "email": "mukirisimon@gmail.com",
+  "email": "mukiri.16030@students.kyu.ac.ke",
   "fullName": "simon njoroge",
   "role": "admin",
   "phone": "+254717322552",
-  "profilePicture": "https://example.com/images/profile.jpg"
+  "profilePicture": "https://example.com/images/profile.jpg",
+  "claims": [
+    "user",
+    "get:user",
+    "create:user",
+    "update:user",
+    "delete:user",
+    "add:tourpackage",
+    "get:tourpackage"]
 }
 
 
@@ -58,7 +66,7 @@ Content-Type:  application/json
 
 ### Delete a user by ID
 ###
-DELETE {{url}}/users/1008
+DELETE {{url}}/users/2
 Authorization:  Bearer {{access_token}}
 
 ### login
@@ -70,7 +78,7 @@ Content-Type: application/json
 
 {
   "email": "mukiri.16030@students.kyu.ac.ke",
-  "password": "JrTd7_Q_#fR2"
+  "password": "8FN.q#TSuOW5"
 }
 
 ### logout

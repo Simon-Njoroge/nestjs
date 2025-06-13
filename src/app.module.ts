@@ -27,6 +27,9 @@ import { CustomThrottlerGuard } from './common/guards/throttler.guard';
 import { ThrottlerBehindProxyGuard } from './common/guards/throttler-behind-proxy.guard';
 import { CommonModule } from './common/common.module';
 import { SeedModule } from './modules/seed/seed.module';
+import { EmailModule } from './common/utils/email/email.module';
+// import { RateLimitInterceptor } from './common/interceptors/rate-limit.interceptor';
+import { BannedThrottlerGuard } from './common/guards/banned-throttler.guard';
 
 @Module({
   imports: [
@@ -55,6 +58,7 @@ import { SeedModule } from './modules/seed/seed.module';
         ttl: 30,
       }),
     }),
+    EmailModule,
     UsersModule,
     AuthModule,
     GuestUsersModule,
@@ -76,12 +80,17 @@ import { SeedModule } from './modules/seed/seed.module';
       provide: APP_INTERCEPTOR,
       useClass: CacheInterceptor,
     },
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: RateLimitInterceptor,
+    // },
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
     },
-    { provide: APP_GUARD, useClass: CustomThrottlerGuard },
-    { provide: APP_GUARD, useClass: ThrottlerBehindProxyGuard },
+    // { provide: APP_GUARD, useClass: CustomThrottlerGuard },
+    // { provide: APP_GUARD, useClass: ThrottlerBehindProxyGuard },
+    { provide: APP_GUARD, useClass: BannedThrottlerGuard },
   ],
 })
 export class AppModule implements NestModule {

@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { EmailService } from 'src/common/utils/email/email.service';
+import { Role } from 'src/common/constants';
 
 @Injectable()
 export class AuthService {
@@ -36,24 +37,23 @@ export class AuthService {
         'claims',
       ],
     });
-    if (!user) throw new UnauthorizedException('Invalid credentials');
+    if (!user) return new UnauthorizedException('Invalid credentials');
 
     const match = await bcrypt.compare(password, user.password);
-    if (!match) throw new UnauthorizedException('Invalid credentials');
-
+    if (!match) return new UnauthorizedException('Invalid password');
+    if (user.role === Role.BANNED) {
+      await this.userRepo.update(user.id, { lastLogin: new Date() });
+      // Optionally, you can log the attempt or notify the user
+      await this.emailService.sendBannedAccountNotification(user.email);
+      // Return a specific error for banned accounts
+      return new UnauthorizedException('Your account has been banned');
+    }
     const tokens = await this.getTokens(user.id, user.email, user.claims);
     await this.updateRefreshToken(user.id, tokens.refresh_token);
     await this.userRepo.update(user.id, { lastLogin: new Date() });
 
     return {
-      tokens,
-      user: {
-        fullName: user.fullName,
-        email: user.email,
-        phone: user.phone,
-        role: user.role,
-        claims: user.claims,
-      },
+      tokens
     };
   }
 
@@ -66,7 +66,7 @@ export class AuthService {
       throw new UnauthorizedException('Access Denied');
 
     const match = await bcrypt.compare(refreshToken, user.refreshToken);
-    if (!match) throw new UnauthorizedException('Invalid refresh token');
+    if (!match) return new UnauthorizedException('Invalid refresh token');
 
     const tokens = await this.getTokens(user.id, user.email, user.claims);
     await this.updateRefreshToken(user.id, tokens.refresh_token);
@@ -118,7 +118,7 @@ export class AuthService {
 
       return { message: 'Password reset successful. You may now log in.' };
     } catch (err) {
-      throw new BadRequestException('Invalid or expired token');
+      return new BadRequestException('Invalid or expired token');
     }
   }
 

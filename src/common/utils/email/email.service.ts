@@ -88,4 +88,24 @@ export class EmailService {
 
     await this.sendEmail(email, 'Password Reset Request', html);
   }
+
+  async sendBannedAccountNotification(
+    email: string,
+    reason: string = 'Your account has been banned due to policy violations.',
+  ): Promise<void> {
+    const html = `
+    <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f8f9fa; border-radius: 10px; border: 1px solid #ddd;">
+      <h2 style="color: #d9534f;">🚫 Account Banned</h2>
+      <p style="font-size: 16px; color: #333;">${reason}</p>
+      <p style="font-size: 14px; color: #555;">
+        If you believe this is a mistake, please contact our support team for further assistance.
+      </p>
+      <p style="margin-top: 20px;">
+        <a href="mailto:support@example.com" style="color: #007bff; text-decoration: none;">📧 Contact Support</a>
+      </p>
+    </div>
+  `;
+
+    await this.sendEmail(email, 'Account Banned', html);
+  }
 }

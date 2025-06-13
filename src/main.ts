@@ -13,6 +13,7 @@ import './polyfill';
 import { Logger } from './common/utils/logger';
 import helmet from 'helmet';
 import * as bodyParser from 'body-parser';
+import { RateLimitInterceptor } from './common/interceptors/rate-limit.interceptor';
 
 // import { RolesGuard } from './common/guards/roles.guard';
 async function bootstrap() {
@@ -51,6 +52,8 @@ async function bootstrap() {
   // app.use(LoggerMiddleware);
 
   app.use(bodyParser.json({ type: 'application/json' }));
+
+  
 
   // Global pipes
   app.useGlobalPipes(

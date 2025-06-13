@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm';
 import { Booking } from '../../bookings/entities/booking.entity';
 import { Inquiry } from '../../inquiries/entities/inquiry.entity';
 import { Review } from '../../review/entities/review.entity';

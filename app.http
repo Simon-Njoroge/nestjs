@@ -1,6 +1,6 @@
 @url = http://localhost:8000
 
-@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoibXVraXJpLjE2MDMwQHN0dWRlbnRzLmt5dS5hYy5rZSIsImNsYWltcyI6WyJ1c2VyIiwiZ2V0OnVzZXIiLCJjcmVhdGU6dXNlciIsInVwZGF0ZTp1c2VyIiwiZGVsZXRlOnVzZXIiLCJhZGQ6dG91cnBhY2thZ2UiLCJnZXQ6dG91cnBhY2thZ2UiXSwiaWF0IjoxNzQ5ODEyNjQ1LCJleHAiOjE3NDk4MTM1NDV9.ZnRLqPd6j7X9dhrFggypXtNy7XrBl-mXeZ6iHr4DOCY
+@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsImVtYWlsIjoibXVraXJpLjE2MDMwQHN0dWRlbnRzLmt5dS5hYy5rZSIsImNsYWltcyI6WyJ1c2VyIiwiZ2V0OnVzZXIiLCJjcmVhdGU6dXNlciIsInVwZGF0ZTp1c2VyIiwiZGVsZXRlOnVzZXIiLCJhZGQ6dG91cnBhY2thZ2UiLCJnZXQ6dG91cnBhY2thZ2UiXSwiaWF0IjoxNzQ5ODIzNTUwLCJleHAiOjE3NDk4MjQ0NTB9.t_RWTnCaM3zFDyZUSmZ6Ouin8MfEHu5GTkF8zFpwOsQ
 @refresh_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoibXVraXJpc2ltb24yMkBnbWFpbC5jb20iLCJjbGFpbXMiOlsidXNlciIsImdldDp1c2VyIiwiY3JlYXRlOnVzZXIiLCJ1cGRhdGU6dXNlciIsImRlbGV0ZTp1c2VyIiwiYWRkOnRvdXJwYWNrYWdlIiwiZ2V0OnRvdXJwYWNrYWdlIl0sImlhdCI6MTc0OTgxMDM1MywiZXhwIjoxNzUwNDE1MTUzfQ.M4BRXWroJVde6p-lBMXAsCPfO08byuwjWqNnH2O2mKE
 
 ### Seed the database with initial data
@@ -27,7 +27,7 @@ Content-Type: application/json
 
 {
   "email": "mukiri.16030@students.kyu.ac.ke",
-  "fullName": "simon njoroge",
+  "fullName": "Simon Njoroge Mukiri",
   "role": "admin",
   "phone": "+254717322552",
   "profilePicture": "https://example.com/images/profile.jpg",
@@ -54,7 +54,7 @@ Authorization:  Bearer {{access_token}}
 Content-Type:  application/json
 
 {
-  "email": "mukiri@students.kyu.ac.ke",
+  "email": "mukirisimon22@gmail.com",
   "firstName": "simon",
   "lastName": "Njoroge",
   "role": "user",
@@ -66,7 +66,7 @@ Content-Type:  application/json
 
 ### Delete a user by ID
 ###
-DELETE {{url}}/users/2
+DELETE {{url}}/users/4
 Authorization:  Bearer {{access_token}}
 
 ### login
@@ -78,12 +78,12 @@ Content-Type: application/json
 
 {
   "email": "mukiri.16030@students.kyu.ac.ke",
-  "password": "8FN.q#TSuOW5"
+  "password": "U9{n7*<[2PC{"
 }
 
 ### logout
 ###
-POST {{url}}/auth/logout/1
+POST {{url}}/auth/logout/5
 Authorization:  Bearer {{access_token}}
 
 

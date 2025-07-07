@@ -10,11 +10,11 @@ POST {{url}}/seed
 ### users Routes ###
 ### Get all users
 ### 
-GET {{url}}/users
+GET {{url}}/users?page=1&limit=10
 Authorization:  Bearer {{access_token}}
 
 ### Get user by id
-GET {{url}}/users/1000000
+GET {{url}}/users/14
 Authorization:  Bearer {{access_token}}
 
 

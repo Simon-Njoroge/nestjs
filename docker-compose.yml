@@ -2,7 +2,7 @@
 services:
   postgres:
     image: postgres:13-alpine
-    container_name: tourism_postgres
+    container_name: tourism_postgres1
     environment:
      POSTGRES_USER: postgres
      POSTGRES_PASSWORD: postgres
@@ -17,7 +17,7 @@ services:
 
   redis:
     image: redis:6-alpine
-    container_name: tourism_redis
+    container_name: tourism_redis1
     ports:
       - "6379:6379"
     volumes:
@@ -34,7 +34,7 @@ services:
 
   app:
     build: .
-    container_name: tourism_app
+    container_name: tourism_app1
     depends_on:
       - postgres
       - redis

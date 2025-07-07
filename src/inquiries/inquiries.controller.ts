@@ -22,14 +22,16 @@ import { Claims } from 'src/common/decorators/claims.decorator';
 import { ClaimsGuard } from 'src/common/guards/claims.guard';
 import { AtGuard } from 'src/common/guards/at.guard';
 import { UseGuards } from '@nestjs/common';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiTags('Inquiries')
 @Controller('inquiries')
 export class InquiriesController {
   constructor(private readonly inquiryService: InquiriesService) {}
 
-  @UseGuards(AtGuard, ClaimsGuard)
-  @Claims('admin', 'create:inquiry')
+  // @UseGuards(AtGuard, ClaimsGuard)
+  // @Claims('admin', 'create:inquiry')
+  @Public()
   @Post()
   @ApiOperation({ summary: 'Submit an inquiry (by user or guest)' })
   @ApiResponse({
@@ -41,8 +43,9 @@ export class InquiriesController {
     return this.inquiryService.create(createInquiryDto);
   }
 
-  @UseGuards(AtGuard, ClaimsGuard)
-  @Claims('admin', 'get:inquiries')
+  // @UseGuards(AtGuard, ClaimsGuard)
+  // @Claims('admin', 'get:inquiries')
+  @Public()
   @Get()
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all inquiries' })
@@ -55,8 +58,9 @@ export class InquiriesController {
     return this.inquiryService.findAll(Number(page), Number(limit));
   }
 
-  @UseGuards(AtGuard, ClaimsGuard)
-  @Claims('admin', 'get:inquiries')
+  // @UseGuards(AtGuard, ClaimsGuard)
+  // @Claims('admin', 'get:inquiries')
+  @Public()
   @Get(':id')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get inquiry by ID' })
@@ -66,8 +70,9 @@ export class InquiriesController {
     return this.inquiryService.findOne(+id);
   }
 
-  @UseGuards(AtGuard, ClaimsGuard)
-  @Claims('admin', 'delete:inquiry')
+  // @UseGuards(AtGuard, ClaimsGuard)
+  // @Claims('admin', 'delete:inquiry')
+  @Public()
   @Delete(':id')
   @ApiBearerAuth()
   @HttpCode(HttpStatus.NO_CONTENT)

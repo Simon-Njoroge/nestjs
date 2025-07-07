@@ -24,6 +24,7 @@ import { Ticket } from './entities/ticket.entity';
 import { Claims } from 'src/common/decorators/claims.decorator';
 import { ClaimsGuard } from 'src/common/guards/claims.guard';
 import { AtGuard } from 'src/common/guards/at.guard';
+import { Public } from 'src/common/decorators/public.decorator';
 
 
 @ApiTags('tickets')
@@ -33,8 +34,9 @@ import { AtGuard } from 'src/common/guards/at.guard';
 export class TicketsController {
   constructor(private readonly ticketService: TicketsService) {}
 
-  @UseGuards(AtGuard, ClaimsGuard)
-  @Claims('admin', 'create:ticket')
+  // @UseGuards(AtGuard, ClaimsGuard)
+  // @Claims('admin', 'create:ticket')
+  @Public()
   @Post()
   @ApiOperation({ summary: 'Create a new ticket' })
   @ApiResponse({ status: 201, description: 'Ticket created', type: Ticket })
@@ -42,8 +44,9 @@ export class TicketsController {
     return this.ticketService.create(createTicketDto);
   }
 
-  @UseGuards(AtGuard, ClaimsGuard)
-  @Claims('admin', 'get:tickets')
+  // @UseGuards(AtGuard, ClaimsGuard)
+  // @Claims('admin', 'get:tickets')
+  @Public()
   @Get()
   @ApiOperation({ summary: 'Get all tickets' })
   @ApiResponse({ status: 200, description: 'List of tickets', type: [Ticket] })
@@ -51,8 +54,9 @@ export class TicketsController {
     return this.ticketService.findAll(Number(page), Number(limit));
   }
 
-  @UseGuards(AtGuard, ClaimsGuard)
-  @Claims('admin', 'get:tickets')
+  // @UseGuards(AtGuard, ClaimsGuard)
+  // @Claims('admin', 'get:tickets')
+  @Public()
   @Get(':id')
   @ApiOperation({ summary: 'Get a ticket by ID' })
   @ApiResponse({ status: 200, description: 'Found ticket', type: Ticket })
@@ -60,8 +64,9 @@ export class TicketsController {
     return this.ticketService.findOne(id);
   }
 
-  @UseGuards(AtGuard, ClaimsGuard)
-  @Claims('admin', 'update:ticket')
+  // @UseGuards(AtGuard, ClaimsGuard)
+  // @Claims('admin', 'update:ticket')
+  @Public()
   @Patch(':id')
   @ApiOperation({ summary: 'Update a ticket by ID' })
   @ApiResponse({ status: 200, description: 'Updated ticket', type: Ticket })
@@ -72,8 +77,9 @@ export class TicketsController {
     return this.ticketService.update(id, updateTicketDto);
   }
 
-  @UseGuards(AtGuard, ClaimsGuard)
-  @Claims('admin', 'delete:ticket')
+  // @UseGuards(AtGuard, ClaimsGuard)
+  // @Claims('admin', 'delete:ticket')
+  @Public()
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a ticket by ID' })
   @ApiResponse({ status: 200, description: 'Ticket deleted' })

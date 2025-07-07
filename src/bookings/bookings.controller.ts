@@ -22,6 +22,7 @@ import { Claims } from 'src/common/decorators/claims.decorator';
 import { ClaimsGuard } from 'src/common/guards/claims.guard';
 import { AtGuard } from 'src/common/guards/at.guard';
 import { UseGuards } from '@nestjs/common';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiTags('Bookings')
 @ApiBearerAuth()
@@ -29,8 +30,9 @@ import { UseGuards } from '@nestjs/common';
 export class BookingsController {
   constructor(private readonly bookingService: BookingsService) {}
 
-  @UseGuards(AtGuard, ClaimsGuard)
-  @Claims('admin', 'create:booking')
+  // @UseGuards(AtGuard, ClaimsGuard)
+  // @Claims('admin', 'create:booking')
+  @Public()
   @Post()
   @ApiOperation({ summary: 'Create a new booking' })
   @ApiResponse({ status: 201, description: 'Booking created successfully.' })
@@ -38,32 +40,36 @@ export class BookingsController {
     return this.bookingService.create(dto);
   }
 
-  @UseGuards(AtGuard, ClaimsGuard)
-  @Claims('admin', 'get:bookings')
+  // @UseGuards(AtGuard, ClaimsGuard)
+  // @Claims('admin', 'get:bookings')
+  @Public()
   @Get()
   @ApiOperation({ summary: 'Retrieve all bookings' })
   async findAll(@Query('page') page = 1, @Query('limit') limit = 1000) {
     return this.bookingService.findAll(Number(page), Number(limit));
   }
 
-  @UseGuards(AtGuard, ClaimsGuard)
-  @Claims('admin', 'get:bookings')
+  // @UseGuards(AtGuard, ClaimsGuard)
+  // @Claims('admin', 'get:bookings')
+  @Public()
   @Get(':id')
   @ApiOperation({ summary: 'Get a booking by ID' })
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Booking> {
     return this.bookingService.findOne(id);
   }
 
-  @UseGuards(AtGuard, ClaimsGuard)
-  @Claims('admin', 'delete:booking')
+  // @UseGuards(AtGuard, ClaimsGuard)
+  // @Claims('admin', 'delete:booking')
+  @Public()
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a booking by ID' })
   async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.bookingService.remove(id);
   }
 
-  @UseGuards(AtGuard, ClaimsGuard)
-  @Claims('admin', 'update:booking')
+  // @UseGuards(AtGuard, ClaimsGuard)
+  // @Claims('admin', 'update:booking')
+  @Public()
   @Patch(':id/status')
   @ApiOperation({ summary: 'Update the status of a booking' })
   async updateStatus(

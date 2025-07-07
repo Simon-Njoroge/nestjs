@@ -9,13 +9,13 @@ import { Payment } from '../payment/entities/payment.entity';
 import { Inquiry } from '../inquiries/entities/inquiry.entity';
 import { Review } from '../review/entities/review.entity';
 import { Ticket } from '../tickets/entities/ticket.entity';
-import { Role } from '../../common/constants';
+import { Role } from '../common/constants';
 
 @Injectable()
 export class SeedService {
   private readonly logger = new Logger(SeedService.name);
   private readonly BATCH_SIZE = 500;
-  private readonly TOTAL_RECORDS = 1_000_000;
+  private readonly TOTAL_RECORDS = 9_000; // Total records to seed
 
   constructor(
     @InjectRepository(User) private readonly userRepo: Repository<User>,

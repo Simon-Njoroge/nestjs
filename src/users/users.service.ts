@@ -14,7 +14,7 @@ import * as bcrypt from 'bcrypt';
 import { EmailService } from 'src/common/utils/email/email.service';
 import { PasswordGenerator } from 'src/common/utils/generatepassword';
 import { PaginationResult, paginate } from 'src/common/pipes/pagination.util';
-import {Role} from '../../common/constants'
+import {Role} from '../common/constants'
 
 @Injectable()
 export class UsersService {

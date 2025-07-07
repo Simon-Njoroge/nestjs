@@ -7,7 +7,7 @@ import {
   MinLength,
   IsArray,
 } from 'class-validator';
-import { Role } from '../../../common/constants';
+import { Role } from '../../common/constants';
 import { ApiProperty } from '@nestjs/swagger';
 export class CreateUserDto {
   @ApiProperty()

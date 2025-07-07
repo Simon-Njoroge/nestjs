@@ -10,8 +10,8 @@ import { Payment } from './entities/payment.entity';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { Booking } from '../bookings/entities/booking.entity';
-import { MpesaClient } from '../../common/utils/payment/mpesa-client';
-import { Logger } from '../../common/utils/logger';
+import { MpesaClient } from '../common/utils/payment/mpesa-client';
+import { Logger } from '../common/utils/logger';
 import { PaginationResult, paginate } from 'src/common/pipes/pagination.util';
 
 @Injectable()

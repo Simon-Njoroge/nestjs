@@ -9,7 +9,7 @@ import {
   ThrottlerStorage,
 } from '@nestjs/throttler';
 import { Reflector } from '@nestjs/core';
-import { UsersService } from '../../modules/users/users.service';
+import { UsersService } from '../../users/users.service';
 import { EmailService } from '../utils/email/email.service';
 import { TooManyRequestsException } from '../filters/tooManyRequestsExceptions';
 import { Role } from '../constants';

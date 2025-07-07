@@ -4,8 +4,8 @@ import { BookingsController } from './bookings.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Booking } from './entities/booking.entity';
 import { DatabaseModule } from 'src/config/database.module';
-import { User } from '../../modules/users/entities/user.entity';
-import { TourPackage } from '../../modules/tour-packages/entities/tour-package.entity';
+import { User } from '../users/entities/user.entity';
+import { TourPackage } from '../tour-packages/entities/tour-package.entity';
 
 @Module({
   imports: [

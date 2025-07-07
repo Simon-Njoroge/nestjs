@@ -7,9 +7,9 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import rateLimit from 'express-rate-limit';
-import { UsersService } from '../../modules/users/users.service';
+import { UsersService } from '../../users/users.service';
 import { TooManyRequestsException } from '../../common/filters/tooManyRequestsExceptions';
-import { User } from '../../modules/users/entities/user.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Injectable()
 export class RateLimitInterceptor implements NestInterceptor {

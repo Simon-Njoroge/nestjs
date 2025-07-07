@@ -7,8 +7,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Booking } from './entities/booking.entity';
 import { CreateBookingDto } from './dto/create-booking.dto';
-import { User } from '../../modules/users/entities/user.entity';
-import { TourPackage } from '../../modules/tour-packages/entities/tour-package.entity';
+import { User } from '../users/entities/user.entity';
+import { TourPackage } from '../tour-packages/entities/tour-package.entity';
 import { PaginationResult, paginate } from 'src/common/pipes/pagination.util';
 
 @Injectable()

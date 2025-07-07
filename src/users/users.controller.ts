@@ -40,21 +40,24 @@ export class UsersController {
     return this.usersService.findAll(Number(page), Number(limit));
   }
 
-  @UseGuards(AtGuard, ClaimsGuard)
-  @Claims('admin', 'get:user')
+  // @UseGuards(AtGuard, ClaimsGuard)
+  // @Claims('admin', 'get:user')
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
 
-  @UseGuards(AtGuard, ClaimsGuard)
-  @Claims('admin', 'update:user')
+  // @UseGuards(AtGuard, ClaimsGuard)
+  // @Claims('admin', 'update:user')
+  @Public()
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
   }
-  @UseGuards(AtGuard, ClaimsGuard)
-  @Claims('admin', 'delete:user')
+  // @UseGuards(AtGuard, ClaimsGuard)
+  // @Claims('admin', 'delete:user')
+  @Public()
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);

@@ -22,6 +22,7 @@ import { Review } from './entities/review.entity';
 import { Claims } from 'src/common/decorators/claims.decorator';
 import { ClaimsGuard } from 'src/common/guards/claims.guard';
 import { AtGuard } from 'src/common/guards/at.guard';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiTags('Reviews')
 @ApiBearerAuth()
@@ -29,6 +30,7 @@ import { AtGuard } from 'src/common/guards/at.guard';
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
+  @Public()
   @Post()
   @ApiOperation({ summary: 'Create a new review' })
   @ApiResponse({ status: 201, description: 'Review created', type: Review })
@@ -37,6 +39,7 @@ export class ReviewController {
   }
 
   @Get()
+  @Public()
   @ApiOperation({ summary: 'Get all reviews' })
   @ApiResponse({
     status: 200,
@@ -47,6 +50,7 @@ export class ReviewController {
     return this.reviewService.findAll(Number(page), Number(limit));
   }
 
+  @Public()
   @Get(':id')
   @ApiOperation({ summary: 'Get a review by ID' })
   @ApiResponse({ status: 200, description: 'Review found', type: Review })
@@ -55,6 +59,7 @@ export class ReviewController {
     return this.reviewService.findOne(id);
   }
 
+  @Public()
   @Patch(':id')
   @ApiOperation({ summary: 'Update a review by ID' })
   @ApiResponse({ status: 200, description: 'Review updated', type: Review })
@@ -66,6 +71,7 @@ export class ReviewController {
     return this.reviewService.update(id, updateReviewDto);
   }
 
+  @Public()
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a review by ID' })
   @ApiResponse({ status: 204, description: 'Review deleted' })
